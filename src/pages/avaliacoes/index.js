@@ -1,18 +1,34 @@
 import React from 'react';
-import { Typography, Paper, Box } from '@mui/material';
+import { 
+  Typography, 
+  Paper, 
+  Box, 
+  Button,
+  Stack
+} from '@mui/material';
+import { Add as AddIcon } from '@mui/icons-material';
+import ListaAvaliacoes from './ListaAvaliacoes';
 
 function Avaliacoes() {
   return (
-    <Paper sx={{ p: 2 }}>
-      <Typography variant="h5" gutterBottom>
-        Avaliações
-      </Typography>
-      <Box>
-        <Typography>
-          Conteúdo da página de avaliações será implementado aqui.
+    <Stack spacing={3}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Typography variant="h5">
+          Avaliações
         </Typography>
+        <Button 
+          variant="contained" 
+          startIcon={<AddIcon />}
+          onClick={() => console.log('Nova avaliação')}
+        >
+          Nova Avaliação
+        </Button>
       </Box>
-    </Paper>
+
+      <Paper sx={{ p: 2 }}>
+        <ListaAvaliacoes />
+      </Paper>
+    </Stack>
   );
 }
 

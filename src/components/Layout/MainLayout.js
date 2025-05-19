@@ -20,8 +20,12 @@ import {
   Assessment as AssessmentIcon,
   People as PeopleIcon,
   Feedback as FeedbackIcon,
+  Brightness4,
+  Brightness7,
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import Logo from '../../assets/images/logo.png';
+import { useTheme as useThemeContext } from '../../contexts/ThemeContext';
 
 const DRAWER_WIDTH = 240;
 
@@ -37,6 +41,7 @@ function MainLayout({ children }) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const navigate = useNavigate();
+  const { isDarkMode, toggleTheme } = useThemeContext();
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -76,9 +81,22 @@ function MainLayout({ children }) {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            UPBase
-          </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
+            <img
+              src={Logo}
+              alt="UPBase Logo"
+              style={{
+                height: '40px',
+                marginRight: '16px',
+              }}
+            />
+            <Typography variant="h6" noWrap component="div">
+              UPBase
+            </Typography>
+          </Box>
+          <IconButton color="inherit" onClick={toggleTheme}>
+            {isDarkMode ? <Brightness7 /> : <Brightness4 />}
+          </IconButton>
         </Toolbar>
       </AppBar>
 

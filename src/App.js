@@ -1,13 +1,18 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { ThemeProvider } from '@mui/material';
-import theme from './utils/theme';
+import { ThemeProvider as MuiThemeProvider } from '@mui/material';
+import { ThemeProvider } from './contexts/ThemeContext';
+import getTheme from './utils/theme';
+import { useTheme } from './contexts/ThemeContext';
 import Home from './pages/Home';
 import Avaliacoes from './pages/avaliacoes';
 import MainLayout from './components/Layout/MainLayout';
 
-function App() {
+function ThemedApp() {
+  const { isDarkMode } = useTheme();
+  const theme = getTheme(isDarkMode ? 'dark' : 'light');
+
   return (
-    <ThemeProvider theme={theme}>
+    <MuiThemeProvider theme={theme}>
       <BrowserRouter>
         <MainLayout>
           <Routes>
@@ -16,6 +21,14 @@ function App() {
           </Routes>
         </MainLayout>
       </BrowserRouter>
+    </MuiThemeProvider>
+  );
+}
+
+function App() {
+  return (
+    <ThemeProvider>
+      <ThemedApp />
     </ThemeProvider>
   );
 }

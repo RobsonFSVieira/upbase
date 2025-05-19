@@ -2,46 +2,19 @@ import { createTheme } from '@mui/material';
 
 const theme = createTheme({
   palette: {
+    // Aqui você colocará as cores da sua identidade visual
     primary: {
-      main: '#1976d2',
-      light: '#42a5f5',
-      dark: '#1565c0',
+      main: '#SUA_COR_PRINCIPAL',
+      light: '#SUA_COR_PRINCIPAL_CLARA',
+      dark: '#SUA_COR_PRINCIPAL_ESCURA',
     },
     secondary: {
-      main: '#dc004e',
-      light: '#ff4081',
-      dark: '#c51162',
-    },
-    background: {
-      default: '#f5f5f5',
-      paper: '#ffffff',
-    },
+      main: '#SUA_COR_SECUNDARIA',
+      light: '#SUA_COR_SECUNDARIA_CLARA',
+      dark: '#SUA_COR_SECUNDARIA_ESCURA',
+    }
   },
-  typography: {
-    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
-    h4: {
-      fontWeight: 600,
-    },
-  },
-  shape: {
-    borderRadius: 8,
-  },
-  components: {
-    MuiDrawer: {
-      styleOverrides: {
-        paper: {
-          backgroundColor: '#ffffff',
-        },
-      },
-    },
-    MuiAppBar: {
-      styleOverrides: {
-        root: {
-          boxShadow: '0px 1px 3px rgba(0, 0, 0, 0.12)',
-        },
-      },
-    },
-  },
+  // Você pode personalizar fontes, espaçamentos, etc
 });
 
 export default theme;
