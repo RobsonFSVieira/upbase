@@ -3,12 +3,12 @@ import { createTheme } from '@mui/material';
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#1976d2',  // Azul principal
+      main: '#1976d2',
       light: '#42a5f5',
       dark: '#1565c0',
     },
     secondary: {
-      main: '#dc004e',  // Rosa/vermelho
+      main: '#dc004e',
       light: '#ff4081',
       dark: '#c51162',
     },
@@ -25,6 +25,22 @@ const theme = createTheme({
   },
   shape: {
     borderRadius: 8,
+  },
+  components: {
+    MuiDrawer: {
+      styleOverrides: {
+        paper: {
+          backgroundColor: '#ffffff',
+        },
+      },
+    },
+    MuiAppBar: {
+      styleOverrides: {
+        root: {
+          boxShadow: '0px 1px 3px rgba(0, 0, 0, 0.12)',
+        },
+      },
+    },
   },
 });
 
