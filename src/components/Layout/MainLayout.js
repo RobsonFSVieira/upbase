@@ -24,7 +24,7 @@ import {
   Brightness7,
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import Logo from '../../assets/images/logo.png';
+import Logo from '../../assets/images/logo.jpeg';
 import { useTheme as useThemeContext } from '../../contexts/ThemeContext';
 
 const DRAWER_WIDTH = 240;
