@@ -90,7 +90,7 @@ function MainLayout({ children }) {
                   height: '40px',
                   marginRight: '16px',
                 }}
-                onError={() => {
+                onError={(e) => {  // Adicionado o parâmetro 'e'
                   console.error('Erro ao carregar logo:', e);
                   setLogoError(true);
                 }}
