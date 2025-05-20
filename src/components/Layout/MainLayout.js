@@ -134,9 +134,23 @@ function MainLayout({ children }) {
             theme.palette.mode === 'light'
               ? 'rgba(255, 255, 255, 0.9)'
               : 'rgba(26, 44, 52, 0.9)',
+          // Ajuste para mobile
+          '@media (max-width: 600px)': {
+            position: 'sticky',
+            width: '100%',
+          },
         }}
       >
-        <Toolbar>
+        <Toolbar
+          sx={{
+            // Ajuste para mobile
+            '@media (max-width: 600px)': {
+              paddingLeft: 1,
+              paddingRight: 1,
+              minHeight: '64px',
+            },
+          }}
+        >
           <IconButton
             color="inherit"
             edge="start"
@@ -144,23 +158,42 @@ function MainLayout({ children }) {
             sx={{
               mr: 2,
               display: { sm: 'none' },
+              color: theme.palette.mode === 'light' ? '#0F2747' : '#FFFFFF',
               '&:hover': {
-                backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                backgroundColor:
+                  theme.palette.mode === 'light'
+                    ? 'rgba(15, 39, 71, 0.04)'
+                    : 'rgba(255, 255, 255, 0.08)',
               },
             }}
           >
-            <MenuIcon />
+            <MenuIcon sx={{ fontSize: '28px' }} />
           </IconButton>
-          <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              flexGrow: 1,
+              // Ajuste para mobile
+              '@media (max-width: 600px)': {
+                justifyContent: 'center',
+              },
+            }}
+          >
             {!logoError && (
               <img
                 src={Logo}
                 alt="UPBase Logo"
                 style={{
-                  height: '80px', // Aumentado de 60px para 80px
+                  height: '80px',
                   marginRight: '20px',
                   transition: 'transform 0.2s',
                   padding: '4px',
+                  // Ajuste para mobile
+                  '@media (max-width: 600px)': {
+                    height: '60px',
+                    marginRight: '10px',
+                  },
                 }}
                 onError={(e) => {
                   console.error('Erro ao carregar logo:', e);
@@ -169,11 +202,25 @@ function MainLayout({ children }) {
               />
             )}
           </Box>
-          <Box sx={{ display: 'flex', gap: 1 }}>
+          <Box
+            sx={{
+              display: 'flex',
+              gap: 1,
+              // Ajuste para mobile
+              '@media (max-width: 600px)': {
+                position: 'fixed',
+                right: 8,
+                gap: 0.5,
+              },
+            }}
+          >
             <IconButton
               color="inherit"
               sx={{
                 color: theme.palette.mode === 'light' ? '#0F2747' : '#FFFFFF',
+                '@media (max-width: 600px)': {
+                  padding: '8px',
+                },
               }}
             >
               <NotificationsOutlined sx={{ fontSize: '24px' }} />
@@ -182,6 +229,9 @@ function MainLayout({ children }) {
               color="inherit"
               sx={{
                 color: theme.palette.mode === 'light' ? '#0F2747' : '#FFFFFF',
+                '@media (max-width: 600px)': {
+                  padding: '8px',
+                },
               }}
             >
               <AccountCircleOutlined sx={{ fontSize: '24px' }} />
@@ -195,6 +245,9 @@ function MainLayout({ children }) {
                   transform: 'scale(1.1)',
                 },
                 color: theme.palette.mode === 'light' ? '#0F2747' : '#FFFFFF',
+                '@media (max-width: 600px)': {
+                  padding: '8px',
+                },
               }}
             >
               {isDarkMode ? (
