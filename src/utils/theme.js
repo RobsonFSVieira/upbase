@@ -4,26 +4,36 @@ const getTheme = (mode) => createTheme({
   palette: {
     mode,
     primary: {
-      main: '#0F2747',      // Azul marinho
-      light: '#1E3A61',     // Azul marinho claro
-      dark: '#091B33',      // Azul marinho escuro
+      // Verde água modernizado
+      main: mode === 'light' ? '#2A9D8F' : '#34D1BF',
+      light: mode === 'light' ? '#40B4A6' : '#4BE0CE',
+      dark: mode === 'light' ? '#1F756B' : '#2AB3A1',
     },
     secondary: {
-      main: '#FF934C',      // Laranja (mantido da identidade)
-      light: '#FFB07A',     // Laranja claro
-      dark: '#E67E3E',      // Laranja escuro
+      // Laranja da logo
+      main: '#FF934C',
+      light: '#FFB07A',
+      dark: '#E67E3E',
     },
     background: {
-      default: mode === 'light' ? '#F8FAFC' : '#0A1929',
-      paper: mode === 'light' ? '#FFFFFF' : '#132F4C',
+      // Fundos suaves no claro, escuros elegantes no dark
+      default: mode === 'light' ? '#F7F9FC' : '#1A1F2C',
+      paper: mode === 'light' ? '#FFFFFF' : '#252B3B',
     },
     text: {
-      primary: mode === 'light' ? '#0F2747' : '#FFFFFF',
-      secondary: mode === 'light' ? '#475569' : '#94A3B8',
+      primary: mode === 'light' ? '#2C3E50' : '#E9ECEF',
+      secondary: mode === 'light' ? '#64748B' : '#94A3B8',
     },
     action: {
-      active: mode === 'light' ? '#0F2747' : '#FFFFFF',
-      hover: mode === 'light' ? 'rgba(15, 39, 71, 0.04)' : 'rgba(255, 255, 255, 0.08)',
+      // Ações mais visíveis em ambos os modos
+      active: mode === 'light' ? '#2A9D8F' : '#34D1BF',
+      hover: mode === 'light' ? 'rgba(42, 157, 143, 0.08)' : 'rgba(52, 209, 191, 0.12)',
+    },
+    success: {
+      main: mode === 'light' ? '#059669' : '#34D399',
+    },
+    warning: {
+      main: '#FF934C', // Laranja da logo para alertas
     },
   },
   components: {
@@ -31,9 +41,9 @@ const getTheme = (mode) => createTheme({
       styleOverrides: {
         root: {
           backgroundColor: mode === 'light' 
-            ? 'rgba(255, 255, 255, 0.9)' 
-            : 'rgba(19, 47, 76, 0.9)',
-          backdropFilter: 'blur(8px)',
+            ? 'rgba(255, 255, 255, 0.95)' 
+            : 'rgba(37, 43, 59, 0.95)',
+          backdropFilter: 'blur(10px)',
           borderBottom: mode === 'light'
             ? '1px solid #E2E8F0'
             : '1px solid rgba(255, 255, 255, 0.1)',
@@ -43,30 +53,44 @@ const getTheme = (mode) => createTheme({
     MuiDrawer: {
       styleOverrides: {
         paper: {
-          backgroundColor: mode === 'light' ? '#0F2747' : '#132F4C',
+          backgroundColor: mode === 'light' ? '#2A9D8F' : '#252B3B',
           backgroundImage: mode === 'dark' 
-            ? 'linear-gradient(180deg, #132F4C 0%, #0F2747 100%)'
-            : 'linear-gradient(180deg, #0F2747 0%, #1E3A61 100%)',
+            ? 'linear-gradient(180deg, #252B3B 0%, #1A1F2C 100%)'
+            : 'linear-gradient(180deg, #2A9D8F 0%, #1F756B 100%)',
           color: '#FFFFFF',
+        },
+      },
+    },
+    // Melhorias Mobile
+    MuiBottomNavigation: {
+      styleOverrides: {
+        root: {
+          backgroundColor: mode === 'light' 
+            ? 'rgba(255, 255, 255, 0.95)' 
+            : 'rgba(37, 43, 59, 0.95)',
+          backdropFilter: 'blur(10px)',
+          borderTop: mode === 'light'
+            ? '1px solid #E2E8F0'
+            : '1px solid rgba(255, 255, 255, 0.1)',
         },
       },
     },
     MuiCard: {
       styleOverrides: {
         root: {
-          borderRadius: 16,
+          borderRadius: '16px',
           border: mode === 'light'
             ? '1px solid #E2E8F0'
             : '1px solid rgba(255, 255, 255, 0.1)',
           boxShadow: mode === 'light'
-            ? '0px 4px 20px rgba(15, 39, 71, 0.08)'
-            : '0px 4px 20px rgba(0, 0, 0, 0.2)',
+            ? '0 4px 6px rgba(42, 157, 143, 0.1)'
+            : '0 4px 6px rgba(0, 0, 0, 0.2)',
           transition: 'all 0.3s ease',
           '&:hover': {
             transform: 'translateY(-4px)',
             boxShadow: mode === 'light'
-              ? '0px 8px 30px rgba(15, 39, 71, 0.12)'
-              : '0px 8px 30px rgba(0, 0, 0, 0.3)',
+              ? '0 8px 12px rgba(42, 157, 143, 0.15)'
+              : '0 8px 12px rgba(0, 0, 0, 0.3)',
           },
         },
       },
@@ -74,43 +98,68 @@ const getTheme = (mode) => createTheme({
     MuiButton: {
       styleOverrides: {
         root: {
-          borderRadius: 8,
+          borderRadius: '8px',
           textTransform: 'none',
           fontWeight: 500,
           padding: '8px 16px',
-          transition: 'all 0.2s ease',
+          // Botões mais visíveis em mobile
+          '@media (max-width: 600px)': {
+            minHeight: '44px', // Área de toque maior
+            width: '100%', // Full width em mobile
+          },
+        },
+        containedPrimary: {
+          backgroundColor: mode === 'light' ? '#2A9D8F' : '#34D1BF',
+          color: '#FFFFFF',
           '&:hover': {
-            transform: 'translateY(-1px)',
+            backgroundColor: mode === 'light' ? '#1F756B' : '#2AB3A1',
+          },
+        },
+        containedSecondary: {
+          backgroundColor: '#FF934C',
+          color: '#FFFFFF',
+          '&:hover': {
+            backgroundColor: '#E67E3E',
           },
         },
       },
     },
+    // Melhorias para Mobile
     MuiListItem: {
       styleOverrides: {
         root: {
-          margin: '4px 8px',
-          borderRadius: 8,
-          '&:hover': {
-            backgroundColor: 'rgba(255, 255, 255, 0.08)',
+          '@media (max-width: 600px)': {
+            paddingTop: '12px',
+            paddingBottom: '12px',
           },
         },
       },
     },
   },
   typography: {
-    fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+    fontFamily: '"Inter", "Roboto", sans-serif',
     h4: {
       fontWeight: 600,
+      '@media (max-width: 600px)': {
+        fontSize: '1.5rem',
+      },
     },
     h6: {
       fontWeight: 500,
-    },
-    button: {
-      fontWeight: 500,
+      '@media (max-width: 600px)': {
+        fontSize: '1.1rem',
+      },
     },
   },
-  shape: {
-    borderRadius: 12,
+  // Breakpoints otimizados
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 600,
+      md: 960,
+      lg: 1280,
+      xl: 1920,
+    },
   },
 });
 
