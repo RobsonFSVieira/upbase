@@ -4,10 +4,10 @@ const getTheme = (mode) => createTheme({
   palette: {
     mode,
     primary: {
-      // Verde água modernizado
-      main: mode === 'light' ? '#2A9D8F' : '#34D1BF',
-      light: mode === 'light' ? '#40B4A6' : '#4BE0CE',
-      dark: mode === 'light' ? '#1F756B' : '#2AB3A1',
+      // Azul institucional
+      main: mode === 'light' ? '#0F2747' : '#2D5A9D',
+      light: mode === 'light' ? '#1E3A61' : '#3D6AB0',
+      dark: mode === 'light' ? '#091B33' : '#1D4580',
     },
     secondary: {
       // Laranja da logo
@@ -17,8 +17,8 @@ const getTheme = (mode) => createTheme({
     },
     background: {
       // Fundos suaves no claro, escuros elegantes no dark
-      default: mode === 'light' ? '#F7F9FC' : '#1A1F2C',
-      paper: mode === 'light' ? '#FFFFFF' : '#252B3B',
+      default: mode === 'light' ? '#F7F9FC' : '#0A1929',
+      paper: mode === 'light' ? '#FFFFFF' : '#132F4C',
     },
     text: {
       primary: mode === 'light' ? '#2C3E50' : '#E9ECEF',
@@ -53,10 +53,10 @@ const getTheme = (mode) => createTheme({
     MuiDrawer: {
       styleOverrides: {
         paper: {
-          backgroundColor: mode === 'light' ? '#2A9D8F' : '#252B3B',
+          backgroundColor: mode === 'light' ? '#0F2747' : '#132F4C',
           backgroundImage: mode === 'dark' 
-            ? 'linear-gradient(180deg, #252B3B 0%, #1A1F2C 100%)'
-            : 'linear-gradient(180deg, #2A9D8F 0%, #1F756B 100%)',
+            ? 'linear-gradient(180deg, #132F4C 0%, #0A1929 100%)'
+            : 'linear-gradient(180deg, #0F2747 0%, #1E3A61 100%)',
           color: '#FFFFFF',
         },
       },

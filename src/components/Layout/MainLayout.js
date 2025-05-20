@@ -16,24 +16,76 @@ import {
 } from '@mui/material';
 import {
   Menu as MenuIcon,
-  Dashboard as DashboardIcon,
-  Assessment as AssessmentIcon,
-  People as PeopleIcon,
-  Feedback as FeedbackIcon,
-  Brightness4,
-  Brightness7,
+  LightMode,
+  DarkMode,
+  NotificationsOutlined,
+  AccountCircleOutlined,
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useTheme as useThemeContext } from '../../contexts/ThemeContext';
 import Logo from '../../assets/images/logo-official.png';
+import {
+  Dashboard,
+  AssessmentOutlined,
+  GroupOutlined,
+  FeedbackOutlined,
+} from '@mui/icons-material';
 
 const DRAWER_WIDTH = 240;
 
 const menuItems = [
-  { text: 'Dashboard', icon: <DashboardIcon />, path: '/' },
-  { text: 'Avaliações', icon: <AssessmentIcon />, path: '/avaliacoes' },
-  { text: 'Colaboradores', icon: <PeopleIcon />, path: '/colaboradores' },
-  { text: 'Feedbacks', icon: <FeedbackIcon />, path: '/feedbacks' },
+  {
+    text: 'Dashboard',
+    icon: (
+      <Dashboard
+        sx={{
+          color: (theme) =>
+            theme.palette.mode === 'light' ? '#FFFFFF' : '#94A3B8',
+          fontSize: '24px',
+        }}
+      />
+    ),
+    path: '/',
+  },
+  {
+    text: 'Avaliações',
+    icon: (
+      <AssessmentOutlined
+        sx={{
+          color: (theme) =>
+            theme.palette.mode === 'light' ? '#FFFFFF' : '#94A3B8',
+          fontSize: '24px',
+        }}
+      />
+    ),
+    path: '/avaliacoes',
+  },
+  {
+    text: 'Colaboradores',
+    icon: (
+      <GroupOutlined
+        sx={{
+          color: (theme) =>
+            theme.palette.mode === 'light' ? '#FFFFFF' : '#94A3B8',
+          fontSize: '24px',
+        }}
+      />
+    ),
+    path: '/colaboradores',
+  },
+  {
+    text: 'Feedbacks',
+    icon: (
+      <FeedbackOutlined
+        sx={{
+          color: (theme) =>
+            theme.palette.mode === 'light' ? '#FFFFFF' : '#94A3B8',
+          fontSize: '24px',
+        }}
+      />
+    ),
+    path: '/feedbacks',
+  },
 ];
 
 function MainLayout({ children }) {
@@ -117,18 +169,41 @@ function MainLayout({ children }) {
               />
             )}
           </Box>
-          <IconButton
-            color="inherit"
-            onClick={toggleTheme}
-            sx={{
-              transition: 'transform 0.2s',
-              '&:hover': {
-                transform: 'scale(1.1)',
-              },
-            }}
-          >
-            {isDarkMode ? <Brightness7 /> : <Brightness4 />}
-          </IconButton>
+          <Box sx={{ display: 'flex', gap: 1 }}>
+            <IconButton
+              color="inherit"
+              sx={{
+                color: theme.palette.mode === 'light' ? '#0F2747' : '#FFFFFF',
+              }}
+            >
+              <NotificationsOutlined sx={{ fontSize: '24px' }} />
+            </IconButton>
+            <IconButton
+              color="inherit"
+              sx={{
+                color: theme.palette.mode === 'light' ? '#0F2747' : '#FFFFFF',
+              }}
+            >
+              <AccountCircleOutlined sx={{ fontSize: '24px' }} />
+            </IconButton>
+            <IconButton
+              color="inherit"
+              onClick={toggleTheme}
+              sx={{
+                transition: 'transform 0.2s',
+                '&:hover': {
+                  transform: 'scale(1.1)',
+                },
+                color: theme.palette.mode === 'light' ? '#0F2747' : '#FFFFFF',
+              }}
+            >
+              {isDarkMode ? (
+                <LightMode sx={{ fontSize: '24px' }} />
+              ) : (
+                <DarkMode sx={{ fontSize: '24px' }} />
+              )}
+            </IconButton>
+          </Box>
         </Toolbar>
       </AppBar>
 
