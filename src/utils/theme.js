@@ -1,20 +1,23 @@
 import { createTheme } from '@mui/material';
 
-const theme = createTheme({
+const getTheme = (mode) => createTheme({
   palette: {
-    // Aqui você colocará as cores da sua identidade visual
+    mode,
     primary: {
-      main: '#SUA_COR_PRINCIPAL',
-      light: '#SUA_COR_PRINCIPAL_CLARA',
-      dark: '#SUA_COR_PRINCIPAL_ESCURA',
+      main: '#1976d2',
+      light: '#42a5f5',
+      dark: '#1565c0',
     },
     secondary: {
-      main: '#SUA_COR_SECUNDARIA',
-      light: '#SUA_COR_SECUNDARIA_CLARA',
-      dark: '#SUA_COR_SECUNDARIA_ESCURA',
-    }
+      main: '#dc004e',
+      light: '#ff4081',
+      dark: '#c51162',
+    },
+    background: {
+      default: mode === 'light' ? '#f5f5f5' : '#121212',
+      paper: mode === 'light' ? '#ffffff' : '#1e1e1e',
+    },
   },
-  // Você pode personalizar fontes, espaçamentos, etc
 });
 
-export default theme;
+export default getTheme;
