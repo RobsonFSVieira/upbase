@@ -178,7 +178,7 @@ function MainLayout({ children }) {
                 src={Logo}
                 alt="UPBase Logo"
                 style={{
-                  height: '50px',
+                  height: theme.breakpoints.values.sm ? '50px' : '65px',
                   transition: 'transform 0.2s',
                 }}
                 onError={(e) => {
