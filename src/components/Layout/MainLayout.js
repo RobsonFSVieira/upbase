@@ -104,8 +104,8 @@ function MainLayout({ children }) {
                 src="/images/logo.png"
                 alt="UPBase Logo"
                 style={{
-                  height: '40px',
-                  marginRight: '16px',
+                  height: '60px',
+                  marginRight: '20px',
                   transition: 'transform 0.2s',
                 }}
                 onError={(e) => {
