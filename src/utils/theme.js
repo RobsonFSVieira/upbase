@@ -4,63 +4,69 @@ const getTheme = (mode) => createTheme({
   palette: {
     mode,
     primary: {
-      main: '#1F4D55',
-      light: '#2C6D78',
-      dark: '#163940',
+      main: '#0F2747',      // Azul marinho
+      light: '#1E3A61',     // Azul marinho claro
+      dark: '#091B33',      // Azul marinho escuro
     },
     secondary: {
-      main: '#FF934C',
-      light: '#FFA869',
-      dark: '#E67E3E',
+      main: '#FF934C',      // Laranja (mantido da identidade)
+      light: '#FFB07A',     // Laranja claro
+      dark: '#E67E3E',      // Laranja escuro
     },
     background: {
-      default: mode === 'light' ? '#F5F7F8' : '#121418',
-      paper: mode === 'light' ? '#FFFFFF' : '#1F2937',
+      default: mode === 'light' ? '#F8FAFC' : '#0A1929',
+      paper: mode === 'light' ? '#FFFFFF' : '#132F4C',
     },
     text: {
-      primary: mode === 'light' ? '#1F4D55' : '#FFFFFF',
-      secondary: mode === 'light' ? '#666666' : '#94A3B8',
+      primary: mode === 'light' ? '#0F2747' : '#FFFFFF',
+      secondary: mode === 'light' ? '#475569' : '#94A3B8',
     },
-    success: {
-      main: mode === 'light' ? '#10B981' : '#34D399'
-    }
+    action: {
+      active: mode === 'light' ? '#0F2747' : '#FFFFFF',
+      hover: mode === 'light' ? 'rgba(15, 39, 71, 0.04)' : 'rgba(255, 255, 255, 0.08)',
+    },
   },
   components: {
     MuiAppBar: {
       styleOverrides: {
         root: {
-          backgroundColor: mode === 'light' ? '#FFFFFF' : '#1A2C34',
-          color: mode === 'light' ? '#1F4D55' : '#FFFFFF',
-          boxShadow: mode === 'light' 
-            ? '0px 1px 3px rgba(0, 0, 0, 0.1)' 
-            : '0px 1px 3px rgba(0, 0, 0, 0.3)',
+          backgroundColor: mode === 'light' 
+            ? 'rgba(255, 255, 255, 0.9)' 
+            : 'rgba(19, 47, 76, 0.9)',
+          backdropFilter: 'blur(8px)',
+          borderBottom: mode === 'light'
+            ? '1px solid #E2E8F0'
+            : '1px solid rgba(255, 255, 255, 0.1)',
         },
       },
     },
     MuiDrawer: {
       styleOverrides: {
         paper: {
-          backgroundColor: mode === 'light' ? '#1F4D55' : '#1A2C34',
-          color: '#FFFFFF',
+          backgroundColor: mode === 'light' ? '#0F2747' : '#132F4C',
           backgroundImage: mode === 'dark' 
-            ? 'linear-gradient(180deg, #1A2C34 0%, #1F4D55 100%)' 
-            : 'none',
+            ? 'linear-gradient(180deg, #132F4C 0%, #0F2747 100%)'
+            : 'linear-gradient(180deg, #0F2747 0%, #1E3A61 100%)',
+          color: '#FFFFFF',
         },
       },
     },
     MuiCard: {
       styleOverrides: {
         root: {
-          borderRadius: 12,
+          borderRadius: 16,
+          border: mode === 'light'
+            ? '1px solid #E2E8F0'
+            : '1px solid rgba(255, 255, 255, 0.1)',
           boxShadow: mode === 'light'
-            ? '0px 4px 6px rgba(0, 0, 0, 0.05)'
-            : '0px 4px 6px rgba(0, 0, 0, 0.2)',
-          transition: 'transform 0.2s, box-shadow 0.2s',
+            ? '0px 4px 20px rgba(15, 39, 71, 0.08)'
+            : '0px 4px 20px rgba(0, 0, 0, 0.2)',
+          transition: 'all 0.3s ease',
           '&:hover': {
-            transform: 'translateY(-2px)',
+            transform: 'translateY(-4px)',
             boxShadow: mode === 'light'
-              ? '0px 6px 12px rgba(0, 0, 0, 0.1)'
-              : '0px 6px 12px rgba(0, 0, 0, 0.3)',
+              ? '0px 8px 30px rgba(15, 39, 71, 0.12)'
+              : '0px 8px 30px rgba(0, 0, 0, 0.3)',
           },
         },
       },
@@ -71,42 +77,42 @@ const getTheme = (mode) => createTheme({
           borderRadius: 8,
           textTransform: 'none',
           fontWeight: 500,
+          padding: '8px 16px',
+          transition: 'all 0.2s ease',
+          '&:hover': {
+            transform: 'translateY(-1px)',
+          },
         },
       },
     },
     MuiListItem: {
       styleOverrides: {
         root: {
-          borderRadius: 8,
           margin: '4px 8px',
-          width: 'auto',
+          borderRadius: 8,
           '&:hover': {
             backgroundColor: 'rgba(255, 255, 255, 0.08)',
           },
         },
       },
     },
-    MuiListItemIcon: {
-      styleOverrides: {
-        root: {
-          color: '#FFFFFF',
-          minWidth: 40,
-        },
-      },
-    },
-  },
-  shape: {
-    borderRadius: 12
   },
   typography: {
-    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+    fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
     h4: {
       fontWeight: 600,
     },
     h6: {
       fontWeight: 500,
     },
+    button: {
+      fontWeight: 500,
+    },
+  },
+  shape: {
+    borderRadius: 12,
   },
 });
 
 export default getTheme;
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"></link>
