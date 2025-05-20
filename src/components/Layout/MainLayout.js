@@ -25,6 +25,7 @@ import {
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useTheme as useThemeContext } from '../../contexts/ThemeContext';
+import Logo from '../../assets/images/logo-official.png';
 
 const DRAWER_WIDTH = 240;
 
@@ -101,12 +102,18 @@ function MainLayout({ children }) {
           <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
             {!logoError && (
               <img
-                src="/images/logo.png"
+                src={Logo}
                 alt="UPBase Logo"
                 style={{
                   height: '60px',
                   marginRight: '20px',
                   transition: 'transform 0.2s',
+                  border:
+                    theme.palette.mode === 'light'
+                      ? '2px solid #1F4D55'
+                      : '2px solid #FF934C',
+                  borderRadius: '8px',
+                  padding: '4px',
                 }}
                 onError={(e) => {
                   console.error('Erro ao carregar logo:', e);
