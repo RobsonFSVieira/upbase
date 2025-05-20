@@ -122,78 +122,64 @@ function MainLayout({ children }) {
   );
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
       <CssBaseline />
       <AppBar
         position="fixed"
         elevation={0}
         sx={{
           zIndex: theme.zIndex.drawer + 1,
-          backdropFilter: 'blur(8px)',
+          backdropFilter: 'blur(12px)',
           backgroundColor:
             theme.palette.mode === 'light'
-              ? 'rgba(255, 255, 255, 0.9)'
-              : 'rgba(26, 44, 52, 0.9)',
-          // Ajuste para mobile
+              ? 'rgba(255, 255, 255, 0.85)'
+              : 'rgba(15, 39, 71, 0.85)',
+          borderBottom:
+            theme.palette.mode === 'light'
+              ? '1px solid rgba(231, 235, 240, 0.8)'
+              : '1px solid rgba(255, 255, 255, 0.05)',
           '@media (max-width: 600px)': {
-            position: 'sticky',
+            position: 'fixed',
             width: '100%',
+            top: 0,
           },
         }}
       >
         <Toolbar
           sx={{
-            // Ajuste para mobile
-            '@media (max-width: 600px)': {
-              paddingLeft: 1,
-              paddingRight: 1,
-              minHeight: '64px',
-            },
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            gap: 2,
+            minHeight: { xs: '64px', sm: '70px' },
+            px: { xs: 2, sm: 3 },
           }}
         >
-          <IconButton
-            color="inherit"
-            edge="start"
-            onClick={handleDrawerToggle}
-            sx={{
-              mr: 2,
-              display: { sm: 'none' },
-              color: theme.palette.mode === 'light' ? '#0F2747' : '#FFFFFF',
-              '&:hover': {
-                backgroundColor:
-                  theme.palette.mode === 'light'
-                    ? 'rgba(15, 39, 71, 0.04)'
-                    : 'rgba(255, 255, 255, 0.08)',
-              },
-            }}
-          >
-            <MenuIcon sx={{ fontSize: '28px' }} />
-          </IconButton>
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              flexGrow: 1,
-              // Ajuste para mobile
-              '@media (max-width: 600px)': {
-                justifyContent: 'center',
-              },
-            }}
-          >
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <IconButton
+              color="inherit"
+              edge="start"
+              onClick={handleDrawerToggle}
+              sx={{
+                display: { sm: 'none' },
+                color: theme.palette.mode === 'light' ? '#0F2747' : '#FFFFFF',
+                '&:hover': {
+                  backgroundColor:
+                    theme.palette.mode === 'light'
+                      ? 'rgba(15, 39, 71, 0.08)'
+                      : 'rgba(255, 255, 255, 0.08)',
+                },
+              }}
+            >
+              <MenuIcon sx={{ fontSize: 24 }} />
+            </IconButton>
             {!logoError && (
               <img
                 src={Logo}
                 alt="UPBase Logo"
                 style={{
-                  height: '80px',
-                  marginRight: '20px',
+                  height: '50px',
                   transition: 'transform 0.2s',
-                  padding: '4px',
-                  // Ajuste para mobile
-                  '@media (max-width: 600px)': {
-                    height: '60px',
-                    marginRight: '10px',
-                  },
                 }}
                 onError={(e) => {
                   console.error('Erro ao carregar logo:', e);
@@ -202,58 +188,58 @@ function MainLayout({ children }) {
               />
             )}
           </Box>
+
           <Box
             sx={{
               display: 'flex',
-              gap: 1,
-              // Ajuste para mobile
-              '@media (max-width: 600px)': {
-                position: 'fixed',
-                right: 8,
-                gap: 0.5,
-              },
+              alignItems: 'center',
+              gap: { xs: 1, sm: 2 },
             }}
           >
             <IconButton
-              color="inherit"
               sx={{
                 color: theme.palette.mode === 'light' ? '#0F2747' : '#FFFFFF',
-                '@media (max-width: 600px)': {
-                  padding: '8px',
+                '&:hover': {
+                  backgroundColor:
+                    theme.palette.mode === 'light'
+                      ? 'rgba(15, 39, 71, 0.08)'
+                      : 'rgba(255, 255, 255, 0.08)',
                 },
               }}
             >
-              <NotificationsOutlined sx={{ fontSize: '24px' }} />
+              <NotificationsOutlined sx={{ fontSize: 22 }} />
             </IconButton>
             <IconButton
-              color="inherit"
               sx={{
                 color: theme.palette.mode === 'light' ? '#0F2747' : '#FFFFFF',
-                '@media (max-width: 600px)': {
-                  padding: '8px',
+                '&:hover': {
+                  backgroundColor:
+                    theme.palette.mode === 'light'
+                      ? 'rgba(15, 39, 71, 0.08)'
+                      : 'rgba(255, 255, 255, 0.08)',
                 },
               }}
             >
-              <AccountCircleOutlined sx={{ fontSize: '24px' }} />
+              <AccountCircleOutlined sx={{ fontSize: 22 }} />
             </IconButton>
             <IconButton
-              color="inherit"
               onClick={toggleTheme}
               sx={{
-                transition: 'transform 0.2s',
+                color: theme.palette.mode === 'light' ? '#0F2747' : '#FFFFFF',
                 '&:hover': {
+                  backgroundColor:
+                    theme.palette.mode === 'light'
+                      ? 'rgba(15, 39, 71, 0.08)'
+                      : 'rgba(255, 255, 255, 0.08)',
                   transform: 'scale(1.1)',
                 },
-                color: theme.palette.mode === 'light' ? '#0F2747' : '#FFFFFF',
-                '@media (max-width: 600px)': {
-                  padding: '8px',
-                },
+                transition: 'all 0.2s',
               }}
             >
               {isDarkMode ? (
-                <LightMode sx={{ fontSize: '24px' }} />
+                <LightMode sx={{ fontSize: 22 }} />
               ) : (
-                <DarkMode sx={{ fontSize: '24px' }} />
+                <DarkMode sx={{ fontSize: 22 }} />
               )}
             </IconButton>
           </Box>
@@ -262,7 +248,10 @@ function MainLayout({ children }) {
 
       <Box
         component="nav"
-        sx={{ width: { sm: DRAWER_WIDTH }, flexShrink: { sm: 0 } }}
+        sx={{
+          width: { sm: DRAWER_WIDTH },
+          flexShrink: { sm: 0 },
+        }}
       >
         <Drawer
           variant={isMobile ? 'temporary' : 'permanent'}
@@ -273,6 +262,8 @@ function MainLayout({ children }) {
             '& .MuiDrawer-paper': {
               boxSizing: 'border-box',
               width: DRAWER_WIDTH,
+              mt: { sm: '70px' },
+              height: { sm: 'calc(100% - 70px)' },
             },
           }}
         >
@@ -284,9 +275,9 @@ function MainLayout({ children }) {
         component="main"
         sx={{
           flexGrow: 1,
-          p: 3,
+          p: { xs: 2, sm: 3 },
           width: { sm: `calc(100% - ${DRAWER_WIDTH}px)` },
-          mt: ['48px', '56px', '64px'],
+          mt: { xs: '64px', sm: '70px' },
         }}
       >
         {children}
