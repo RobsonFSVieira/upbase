@@ -37,6 +37,7 @@ const menuItems = [
 
 function MainLayout({ children }) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [logoError, setLogoError] = useState(false); // Adicionando o state para o logo
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const navigate = useNavigate();
@@ -81,18 +82,20 @@ function MainLayout({ children }) {
             <MenuIcon />
           </IconButton>
           <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
-            <img
-              src="/images/logo.png"
-              alt="UPBase Logo"
-              style={{
-                height: '40px',
-                marginRight: '16px',
-              }}
-              onError={(e) => {
-                console.error('Erro ao carregar logo:', e);
-                setLogoError(true);
-              }}
-            />
+            {!logoError && (
+              <img
+                src="/images/logo.png"
+                alt="UPBase Logo"
+                style={{
+                  height: '40px',
+                  marginRight: '16px',
+                }}
+                onError={() => {
+                  console.error('Erro ao carregar logo:', e);
+                  setLogoError(true);
+                }}
+              />
+            )}
             <Typography variant="h6" noWrap component="div">
               UPBase
             </Typography>
