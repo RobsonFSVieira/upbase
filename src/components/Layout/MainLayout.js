@@ -71,13 +71,30 @@ function MainLayout({ children }) {
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <AppBar position="fixed" sx={{ zIndex: theme.zIndex.drawer + 1 }}>
+      <AppBar
+        position="fixed"
+        elevation={0}
+        sx={{
+          zIndex: theme.zIndex.drawer + 1,
+          backdropFilter: 'blur(8px)',
+          backgroundColor:
+            theme.palette.mode === 'light'
+              ? 'rgba(255, 255, 255, 0.9)'
+              : 'rgba(26, 44, 52, 0.9)',
+        }}
+      >
         <Toolbar>
           <IconButton
             color="inherit"
             edge="start"
             onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: 'none' } }}
+            sx={{
+              mr: 2,
+              display: { sm: 'none' },
+              '&:hover': {
+                backgroundColor: 'rgba(0, 0, 0, 0.04)',
+              },
+            }}
           >
             <MenuIcon />
           </IconButton>
@@ -87,8 +104,9 @@ function MainLayout({ children }) {
                 src="/images/logo.png"
                 alt="UPBase Logo"
                 style={{
-                  height: '50px',
-                  marginRight: '20px',
+                  height: '40px',
+                  marginRight: '16px',
+                  transition: 'transform 0.2s',
                 }}
                 onError={(e) => {
                   console.error('Erro ao carregar logo:', e);
@@ -97,7 +115,16 @@ function MainLayout({ children }) {
               />
             )}
           </Box>
-          <IconButton color="inherit" onClick={toggleTheme}>
+          <IconButton
+            color="inherit"
+            onClick={toggleTheme}
+            sx={{
+              transition: 'transform 0.2s',
+              '&:hover': {
+                transform: 'scale(1.1)',
+              },
+            }}
+          >
             {isDarkMode ? <Brightness7 /> : <Brightness4 />}
           </IconButton>
         </Toolbar>
