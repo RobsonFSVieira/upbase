@@ -87,8 +87,8 @@ function MainLayout({ children }) {
                 src="/images/logo.png"
                 alt="UPBase Logo"
                 style={{
-                  height: '40px',
-                  marginRight: '16px',
+                  height: '50px',
+                  marginRight: '20px',
                 }}
                 onError={(e) => {
                   console.error('Erro ao carregar logo:', e);
