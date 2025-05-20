@@ -24,7 +24,6 @@ import {
   Brightness7,
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import Logo from '../../assets/images/logo.jpeg';
 import { useTheme as useThemeContext } from '../../contexts/ThemeContext';
 
 const DRAWER_WIDTH = 240;
@@ -83,11 +82,15 @@ function MainLayout({ children }) {
           </IconButton>
           <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
             <img
-              src={Logo}
+              src="/images/logo.png"
               alt="UPBase Logo"
               style={{
                 height: '40px',
                 marginRight: '16px',
+              }}
+              onError={(e) => {
+                console.error('Erro ao carregar logo:', e);
+                setLogoError(true);
               }}
             />
             <Typography variant="h6" noWrap component="div">
