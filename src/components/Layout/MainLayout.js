@@ -105,14 +105,9 @@ function MainLayout({ children }) {
                 src={Logo}
                 alt="UPBase Logo"
                 style={{
-                  height: '60px',
+                  height: '80px', // Aumentado de 60px para 80px
                   marginRight: '20px',
                   transition: 'transform 0.2s',
-                  border:
-                    theme.palette.mode === 'light'
-                      ? '2px solid #1F4D55'
-                      : '2px solid #FF934C',
-                  borderRadius: '8px',
                   padding: '4px',
                 }}
                 onError={(e) => {
