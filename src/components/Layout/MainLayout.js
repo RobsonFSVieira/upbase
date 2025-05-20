@@ -90,15 +90,12 @@ function MainLayout({ children }) {
                   height: '40px',
                   marginRight: '16px',
                 }}
-                onError={(e) => {  // Adicionado o parâmetro 'e'
+                onError={(e) => {
                   console.error('Erro ao carregar logo:', e);
                   setLogoError(true);
                 }}
               />
             )}
-            <Typography variant="h6" noWrap component="div">
-              UPBase
-            </Typography>
           </Box>
           <IconButton color="inherit" onClick={toggleTheme}>
             {isDarkMode ? <Brightness7 /> : <Brightness4 />}
