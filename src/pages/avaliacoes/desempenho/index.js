@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Typography, Box, Button, Stack, Card } from '@mui/material';
 import { Add as AddIcon } from '@mui/icons-material';
 import ListaAvaliacoesDesempenho from './components/ListaAvaliacoesDesempenho';
-import NovaAvaliacaoDesempenho from './components/NovaAvaliacaoDesempenho';
 
 export default function AvaliacoesDesempenho() {
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -29,11 +28,6 @@ export default function AvaliacoesDesempenho() {
       <Card>
         <ListaAvaliacoesDesempenho />
       </Card>
-
-      <NovaAvaliacaoDesempenho 
-        open={dialogOpen} 
-        onClose={() => setDialogOpen(false)}
-      />
     </Stack>
   );
 }
