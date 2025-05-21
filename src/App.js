@@ -1,6 +1,7 @@
 import React from 'react';
 import { CssBaseline } from '@mui/material';
 import { ThemeProvider as MUIThemeProvider } from '@mui/material/styles';
+import { Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { useTheme } from './contexts/ThemeContext';
 import { MainLayout } from './components/Layout';
@@ -15,9 +16,11 @@ function ThemedApp() {
     <MUIThemeProvider theme={theme}>
       <CssBaseline />
       <MainLayout>
-        {routes.map(({ path, element: Element }) => (
-          <Element key={path} />
-        ))}
+        <Routes>
+          {routes.map(({ path, element: Element }) => (
+            <Route key={path} path={path} element={<Element />} />
+          ))}
+        </Routes>
       </MainLayout>
     </MUIThemeProvider>
   );
