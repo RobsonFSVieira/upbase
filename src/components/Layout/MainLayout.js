@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
   AppBar,
   Box,
@@ -22,69 +23,35 @@ import {
   AccountCircleOutlined,
   ExpandMore,
   ExpandLess,
+  Dashboard,
+  Assessment,
+  Group,
+  Event,
+  HealthAndSafety,
+  Warning,
+  Feedback,
+  Timeline
 } from '@mui/icons-material';
-import { useNavigate } from 'react-router-dom';
 import { useTheme as useThemeContext } from '../../contexts/ThemeContext';
 import Logo from '../../assets/images/logo-official.png';
-import {
-  Dashboard,
-  AssessmentOutlined,
-  GroupOutlined,
-  FeedbackOutlined,
-} from '@mui/icons-material';
 
 const DRAWER_WIDTH = 240;
 
 const menuItems = [
-  {
-    text: 'Dashboard',
-    icon: (
-      <Dashboard
-        sx={{
-          color: (theme) =>
-            theme.palette.mode === 'light' ? '#FFFFFF' : '#94A3B8',
-          fontSize: '24px',
-        }}
-      />
-    ),
-    path: '/',
-  },
-  {
-    text: 'Avaliações',
-    icon: (
-      <AssessmentOutlined
-        sx={{
-          color: (theme) =>
-            theme.palette.mode === 'light' ? '#FFFFFF' : '#94A3B8',
-          fontSize: '24px',
-        }}
-      />
-    ),
-    path: '/avaliacoes',
+  { text: 'Dashboard', icon: <Dashboard />, path: '/' },
+  { 
+    text: 'Avaliações', 
+    icon: <Assessment />,
     subItems: [
-      {
-        text: 'Desempenho',
-        path: '/avaliacoes/desempenho',
-      },
-      {
-        text: 'Experiência',
-        path: '/avaliacoes/experiencia',
-      },
-    ],
+      { text: 'Desempenho', path: '/avaliacoes/desempenho' },
+      { text: 'Experiência', path: '/avaliacoes/experiencia' }
+    ]
   },
-  {
-    text: 'Colaboradores',
-    icon: (
-      <GroupOutlined
-        sx={{
-          color: (theme) =>
-            theme.palette.mode === 'light' ? '#FFFFFF' : '#94A3B8',
-          fontSize: '24px',
-        }}
-      />
-    ),
-    path: '/colaboradores',
-  },
+  { text: 'Colaboradores', icon: <Group />, path: '/colaboradores' },
+  { text: 'Escalas', icon: <Event />, path: '/escalas' },
+  { text: 'Atestados', icon: <HealthAndSafety />, path: '/atestados' },
+  { text: 'Apontamentos', icon: <Warning />, path: '/apontamentos' },
+  { text: 'Feedbacks', icon: <Feedback />, path: '/feedbacks' }
 ];
 
 function MainLayout({ children }) {

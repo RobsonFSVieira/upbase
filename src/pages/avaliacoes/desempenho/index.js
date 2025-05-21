@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Typography, Box, Button, Stack, Card } from '@mui/material';
+import { Typography, Box, Button, Stack } from '@mui/material';
 import { Add as AddIcon } from '@mui/icons-material';
-import ListaAvaliacoesDesempenho from './components/ListaAvaliacoesDesempenho';
+import AvaliacaoPaginada from '../../../features/avaliacoes/components/AvaliacaoPaginada';
 
 export default function AvaliacoesDesempenho() {
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -25,9 +25,15 @@ export default function AvaliacoesDesempenho() {
         </Button>
       </Box>
 
-      <Card>
-        <ListaAvaliacoesDesempenho />
-      </Card>
+      {dialogOpen && (
+        <AvaliacaoPaginada
+          onClose={() => setDialogOpen(false)}
+          onComplete={() => {
+            setDialogOpen(false);
+            // Implementar lógica de conclusão
+          }}
+        />
+      )}
     </Stack>
   );
 }
