@@ -7,6 +7,7 @@ const AvaliacoesDesempenho = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [refreshKey, setRefreshKey] = useState(0); // Para forçar recarregamento da lista
 
   const handleError = (error) => {
     console.error('Erro na avaliação de desempenho:', error);
@@ -17,9 +18,9 @@ const AvaliacoesDesempenho = () => {
     setIsLoading(loading);
   };
 
-  const handleSaveEvaluation = () => {
+  const handleFormSave = () => {
     setDialogOpen(false);
-    // Aqui podemos adicionar feedback de sucesso e recarregar os dados
+    setRefreshKey(prev => prev + 1); // Força recarregar a lista
   };
 
   return (
@@ -62,6 +63,7 @@ const AvaliacoesDesempenho = () => {
             </Box>
           )}
           <PerformanceList 
+            key={refreshKey} // Força recarregar quando refreshKey mudar
             onError={handleError} 
             onLoadingChange={handleLoadingChange}
           />
@@ -75,8 +77,9 @@ const AvaliacoesDesempenho = () => {
         fullWidth
       >
         <PerformanceForm 
-          onCancel={() => setDialogOpen(false)}
-          onSave={handleSaveEvaluation}
+          onClose={() => setDialogOpen(false)}
+          onSave={handleFormSave}
+          isDialog={true}
         />
       </Dialog>
     </Box>
