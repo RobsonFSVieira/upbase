@@ -1,5 +1,4 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { CssBaseline } from '@mui/material';
 import { ThemeProvider as MUIThemeProvider } from '@mui/material/styles';
 import { ThemeProvider } from './contexts/ThemeContext';
@@ -15,15 +14,11 @@ function ThemedApp() {
   return (
     <MUIThemeProvider theme={theme}>
       <CssBaseline />
-      <BrowserRouter>
-        <MainLayout>
-          <Routes>
-            {routes.map(({ path, element: Element }) => (
-              <Route key={path} path={path} element={<Element />} />
-            ))}
-          </Routes>
-        </MainLayout>
-      </BrowserRouter>
+      <MainLayout>
+        {routes.map(({ path, element: Element }) => (
+          <Element key={path} />
+        ))}
+      </MainLayout>
     </MUIThemeProvider>
   );
 }
@@ -31,7 +26,9 @@ function ThemedApp() {
 function App() {
   return (
     <ThemeProvider>
-      <ThemedApp />
+      <div className="App">
+        <ThemedApp />
+      </div>
     </ThemeProvider>
   );
 }
