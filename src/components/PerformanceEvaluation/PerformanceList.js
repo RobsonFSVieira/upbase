@@ -17,17 +17,24 @@ import { performanceService } from '../../services/performanceService';
 
 const PerformanceList = ({ onError, onLoadingChange }) => {
   const [evaluations, setEvaluations] = useState([]);
+  // Adicionando um estado de erro local para manuseio correto
+  const [loadError, setLoadError] = useState(null);
+  // Adicionando um estado de loading local para manuseio correto
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
       try {
+        setIsLoading(true);
         if (onLoadingChange) onLoadingChange(true);
         const data = await performanceService.getAll();
         setEvaluations(data);
-      } catch (error) {
-        console.error('Erro ao carregar avaliações:', error);
-        if (onError) onError(error);
+      } catch (err) {
+        console.error('Erro ao carregar avaliações:', err);
+        setLoadError(err.message || 'Erro ao carregar dados');
+        if (onError) onError(err);
       } finally {
+        setIsLoading(false);
         if (onLoadingChange) onLoadingChange(false);
       }
     }
@@ -35,25 +42,21 @@ const PerformanceList = ({ onError, onLoadingChange }) => {
     fetchData();
   }, [onError, onLoadingChange]);
 
-  // Mostrar mensagem de erro em caso de falha
-  if (error) {
+  // Mostrar mensagem de erro se houver algum problema
+  if (loadError) {
     return (
       <Alert severity="error">
-        {error}
-        <Button 
-          onClick={() => window.location.reload()} 
-          sx={{ ml: 2 }}
-          variant="outlined"
-          size="small"
-        >
-          Tentar novamente
-        </Button>
+        Erro ao carregar avaliações: {loadError}
       </Alert>
     );
   }
 
-  // Mostrar mensagem se não houver avaliações
-  if (!loading && (!evaluations || evaluations.length === 0)) {
+  // Verifica se o carregamento está em andamento
+  if (isLoading) {
+    return null; // A página principal já mostra o loading
+  }
+
+  if (!evaluations || evaluations.length === 0) {
     return (
       <Alert severity="info">
         Nenhuma avaliação encontrada. Clique em "Nova Avaliação" para adicionar.
