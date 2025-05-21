@@ -1,11 +1,11 @@
-import Dashboard from '../features/dashboard';
-import AvaliacoesDesempenho from '../features/avaliacoes/desempenho';
-import AvaliacoesExperiencia from '../features/avaliacoes/experiencia';
+import Home from '../pages/Home';
+import AvaliacoesDesempenho from '../pages/avaliacoes/desempenho';
+import AvaliacoesExperiencia from '../pages/avaliacoes/experiencia';
 
 export const routes = [
   {
     path: '/',
-    element: Dashboard
+    element: Home
   },
   {
     path: '/avaliacoes/desempenho',
