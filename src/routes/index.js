@@ -3,7 +3,7 @@ import Avaliacoes from '../pages/avaliacoes';
 import AvaliacoesDesempenho from '../pages/avaliacoes/desempenho';
 import AvaliacoesExperiencia from '../pages/avaliacoes/experiencia';
 import PerformanceForm from '../components/PerformanceEvaluation/PerformanceForm';
-import PerformanceList from '../components/PerformanceEvaluation/PerformanceList';
+import PerformanceDetail from '../components/PerformanceEvaluation/PerformanceDetail';
 import { Navigate } from 'react-router-dom';
 
 export const routes = [
@@ -24,16 +24,12 @@ export const routes = [
     element: AvaliacoesExperiencia
   },
   {
-    path: '/performance',
-    element: <PerformanceList />
-  },
-  {
     path: '/performance/new',
-    element: <PerformanceForm />
+    element: PerformanceForm
   },
   {
     path: '/performance/:id',
-    element: <PerformanceForm />
+    element: PerformanceDetail
   },
   {
     path: '*',

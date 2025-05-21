@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   Table, 
@@ -17,27 +17,35 @@ import { performanceService } from '../../services/performanceService';
 
 const PerformanceList = ({ onError, onLoadingChange }) => {
   const [evaluations, setEvaluations] = useState([]);
+  const isFirstRender = useRef(true);
 
+  // Use useRef para evitar o looping infinito
   useEffect(() => {
     const loadEvaluations = async () => {
-      try {
-        if (onLoadingChange) onLoadingChange(true);
-        console.log('Carregando avaliações...');
+      // Evitar múltiplos carregamentos no mesmo render
+      if (isFirstRender.current) {
+        isFirstRender.current = false;
         
-        const data = await performanceService.getAll();
-        console.log('Avaliações carregadas:', data);
-        
-        setEvaluations(data || []);
-      } catch (error) {
-        console.error('Erro ao carregar avaliações:', error);
-        if (onError) onError(error);
-      } finally {
-        if (onLoadingChange) onLoadingChange(false);
+        try {
+          if (onLoadingChange) onLoadingChange(true);
+          console.log('Carregando avaliações...');
+          
+          const data = await performanceService.getAll();
+          console.log('Avaliações carregadas:', data);
+          
+          setEvaluations(data || []);
+        } catch (error) {
+          console.error('Erro ao carregar avaliações:', error);
+          if (onError) onError(error);
+        } finally {
+          if (onLoadingChange) onLoadingChange(false);
+        }
       }
     };
 
     loadEvaluations();
-  }, [onLoadingChange, onError]);
+    // Remova as dependências para evitar loop
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!evaluations || evaluations.length === 0) {
     return (

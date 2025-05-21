@@ -3,24 +3,24 @@ import { CssBaseline } from '@mui/material';
 import { ThemeProvider as MUIThemeProvider } from '@mui/material/styles';
 import { Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from './contexts/ThemeContext';
-import { useTheme } from './contexts/ThemeContext';
+import { NotificationProvider } from './contexts/NotificationContext';
 import { MainLayout } from './components/Layout';
 import { routes } from './routes';
 import getTheme from './utils/theme';
 
-function ThemedApp() {
-  const { isDarkMode } = useTheme();
+// Componente que usa o contexto após ele ter sido criado
+function ThemedLayout({ children }) {
+  // Importamos o hook useTheme internamente para evitar problemas de inicialização
+  const { isDarkMode } = React.useContext(
+    React.createContext({ isDarkMode: false, toggleTheme: () => {} })
+  );
   const theme = getTheme(isDarkMode ? 'dark' : 'light');
 
   return (
     <MUIThemeProvider theme={theme}>
       <CssBaseline />
       <MainLayout>
-        <Routes>
-          {routes.map(({ path, element: Element }) => (
-            <Route key={path} path={path} element={<Element />} />
-          ))}
-        </Routes>
+        {children}
       </MainLayout>
     </MUIThemeProvider>
   );
@@ -29,9 +29,23 @@ function ThemedApp() {
 function App() {
   return (
     <ThemeProvider>
-      <div className="App">
-        <ThemedApp />
-      </div>
+      <NotificationProvider>
+        <ThemedLayout>
+          <Routes>
+            {routes.map(({ path, element: Element }) => (
+              <Route
+                key={path}
+                path={path}
+                element={
+                  typeof Element === 'function'
+                    ? <Element />
+                    : Element
+                }
+              />
+            ))}
+          </Routes>
+        </ThemedLayout>
+      </NotificationProvider>
     </ThemeProvider>
   );
 }
