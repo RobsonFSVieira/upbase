@@ -2,6 +2,7 @@ import Home from '../pages/Home';
 import Avaliacoes from '../pages/avaliacoes';
 import AvaliacoesDesempenho from '../pages/avaliacoes/desempenho';
 import AvaliacoesExperiencia from '../pages/avaliacoes/experiencia';
+import PerformanceForm from '../components/PerformanceEvaluation/PerformanceForm';
 import { Navigate } from 'react-router-dom';
 
 export const routes = [
@@ -20,6 +21,10 @@ export const routes = [
   {
     path: '/avaliacoes/experiencia',
     element: AvaliacoesExperiencia
+  },
+  {
+    path: '/performance-evaluation',
+    element: <PerformanceForm />
   },
   {
     path: '*',
