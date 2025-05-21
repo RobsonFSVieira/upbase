@@ -37,22 +37,38 @@ const mockData = [
 // Base URL para API
 const BASE_URL = process.env.REACT_APP_API_URL || 'https://api.example.com';
 
+// Cache de dados para evitar múltiplas requisições
+let cachedData = null;
+
 export const performanceService = {
   async getAll() {
     try {
+      // Usar cache se disponível para evitar chamadas repetidas
+      if (cachedData) {
+        console.log('Usando dados em cache');
+        return cachedData;
+      }
+
       // Em produção, usar a API real
       if (process.env.NODE_ENV === 'production' && BASE_URL !== 'https://api.example.com') {
         const response = await axios.get(`${BASE_URL}/performance`);
+        cachedData = response.data;
         return response.data;
       }
       
       // Em desenvolvimento, usar mock data
       console.log('Usando dados mockados para avaliações');
+      cachedData = mockData;
       return mockData;
     } catch (error) {
       console.error('Erro ao buscar avaliações:', error);
       return mockData; // Fallback para mock data
     }
+  },
+
+  // Resetar cache quando novos dados forem criados ou atualizados
+  resetCache() {
+    cachedData = null;
   },
 
   async getById(id) {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   Table, 
@@ -17,35 +17,44 @@ import { performanceService } from '../../services/performanceService';
 
 const PerformanceList = ({ onError, onLoadingChange }) => {
   const [evaluations, setEvaluations] = useState([]);
-  const isFirstRender = useRef(true);
+  const [loaded, setLoaded] = useState(false);
 
-  // Use useRef para evitar o looping infinito
+  // Função de carregamento isolada para evitar loops
   useEffect(() => {
+    // Evitar recarregamentos
+    if (loaded) return;
+
+    // Flag para garantir que o useEffect não será chamado novamente após desmontagem
+    let isMounted = true;
+
     const loadEvaluations = async () => {
-      // Evitar múltiplos carregamentos no mesmo render
-      if (isFirstRender.current) {
-        isFirstRender.current = false;
+      try {
+        if (onLoadingChange) onLoadingChange(true);
+        console.log('Carregando avaliações...');
         
-        try {
-          if (onLoadingChange) onLoadingChange(true);
-          console.log('Carregando avaliações...');
-          
-          const data = await performanceService.getAll();
-          console.log('Avaliações carregadas:', data);
-          
+        const data = await performanceService.getAll();
+        console.log('Avaliações carregadas:', data);
+        
+        // Verificar se o componente ainda está montado
+        if (isMounted) {
           setEvaluations(data || []);
-        } catch (error) {
-          console.error('Erro ao carregar avaliações:', error);
-          if (onError) onError(error);
-        } finally {
-          if (onLoadingChange) onLoadingChange(false);
+          setLoaded(true);
         }
+      } catch (error) {
+        console.error('Erro ao carregar avaliações:', error);
+        if (isMounted && onError) onError(error);
+      } finally {
+        if (isMounted && onLoadingChange) onLoadingChange(false);
       }
     };
 
     loadEvaluations();
-    // Remova as dependências para evitar loop
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+    // Cleanup function
+    return () => {
+      isMounted = false;
+    };
+  }, [loaded, onError, onLoadingChange]);
 
   if (!evaluations || evaluations.length === 0) {
     return (

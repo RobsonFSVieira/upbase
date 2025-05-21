@@ -1,25 +1,13 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Box, Typography, Card, Alert, CircularProgress, Button } from '@mui/material';
 import PerformanceList from '../../../components/PerformanceEvaluation/PerformanceList';
 
 const AvaliacoesDesempenho = () => {
-  console.log('Rendering AvaliacoesDesempenho component');
+  console.log('Renderizando AvaliacoesDesempenho');
   const [dialogOpen, setDialogOpen] = useState(false);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   
-  // Para garantir que o estado de loading seja atualizado independentemente
-  useEffect(() => {
-    // Definir um timeout para verificar se os dados não carregaram
-    const timeout = setTimeout(() => {
-      if (isLoading) {
-        setIsLoading(false);
-      }
-    }, 5000); // Timeout de 5 segundos
-    
-    return () => clearTimeout(timeout);
-  }, [isLoading]);
-
   const handleError = useCallback((error) => {
     console.error('Erro na avaliação de desempenho:', error);
     setError('Ocorreu um erro ao carregar os dados. Por favor, tente novamente.');
@@ -30,6 +18,9 @@ const AvaliacoesDesempenho = () => {
     console.log('Loading state changed to:', loading);
     setIsLoading(loading);
   }, []);
+
+  // Identificador único para o PerformanceList para evitar re-renderizações desnecessárias
+  const performanceListKey = 'performance-list-component';
 
   return (
     <Box>
@@ -63,6 +54,7 @@ const AvaliacoesDesempenho = () => {
             </Box>
           ) : (
             <PerformanceList 
+              key={performanceListKey}
               onError={handleError} 
               onLoadingChange={handleLoadingChange}
             />
