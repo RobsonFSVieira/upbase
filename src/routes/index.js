@@ -2,8 +2,8 @@ import Home from '../pages/Home';
 import Avaliacoes from '../pages/avaliacoes';
 import AvaliacoesDesempenho from '../pages/avaliacoes/desempenho';
 import AvaliacoesExperiencia from '../pages/avaliacoes/experiencia';
-import PerformanceForm from '../components/PerformanceEvaluation/PerformanceForm';
-import PerformanceDetail from '../components/PerformanceEvaluation/PerformanceDetail';
+import ModelosAvaliacao from '../features/avaliacoes/pages/desempenho/ModelosAvaliacao';
+import FormTemplateEditor from '../features/avaliacoes/components/FormTemplateEditor';
 import { Navigate } from 'react-router-dom';
 
 export const routes = [
@@ -24,16 +24,20 @@ export const routes = [
     element: AvaliacoesExperiencia
   },
   {
-    path: '/performance/new',
-    element: PerformanceForm
+    path: '/avaliacoes/modelos',
+    element: ModelosAvaliacao
   },
   {
-    path: '/performance/edit/:id',
-    element: PerformanceForm
+    path: '/avaliacoes/modelos/novo',
+    element: FormTemplateEditor
   },
   {
-    path: '/performance/:id',
-    element: PerformanceDetail
+    path: '/avaliacoes/modelos/:id',
+    element: FormTemplateEditor
+  },
+  {
+    path: '/avaliacoes/modelos/:id/edit',
+    element: FormTemplateEditor
   },
   {
     path: '*',
