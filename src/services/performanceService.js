@@ -1,18 +1,30 @@
 import axios from 'axios';
 
-const API_URL = 'sua_api_url/performance';
+const BASE_URL = 'YOUR_API_URL/performance';
 
 export const performanceService = {
-  async saveEvaluation(data) {
-    return await axios.post(API_URL, data);
+  async getAll() {
+    const response = await axios.get(BASE_URL);
+    return response.data;
   },
 
-  async getEvaluations() {
-    return await axios.get(API_URL);
+  async getById(id) {
+    const response = await axios.get(`${BASE_URL}/${id}`);
+    return response.data;
   },
 
-  async getEvaluationById(id) {
-    return await axios.get(`${API_URL}/${id}`);
+  async create(data) {
+    const response = await axios.post(BASE_URL, data);
+    return response.data;
+  },
+
+  async update(id, data) {
+    const response = await axios.put(`${BASE_URL}/${id}`, data);
+    return response.data;
+  },
+
+  async delete(id) {
+    await axios.delete(`${BASE_URL}/${id}`);
   }
 };
 

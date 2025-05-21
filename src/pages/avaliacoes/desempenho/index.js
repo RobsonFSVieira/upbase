@@ -1,29 +1,36 @@
 import React, { useState } from 'react';
-import { Typography, Box, Button, Stack } from '@mui/material';
-import { Add as AddIcon } from '@mui/icons-material';
+import { Container, Row, Col, Card, Button } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+import PerformanceList from '../../../components/PerformanceEvaluation/PerformanceList';
 import AvaliacaoPaginada from '../../../features/avaliacoes/components/AvaliacaoPaginada';
 
-export default function AvaliacoesDesempenho() {
+const AvaliacoesDesempenho = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
 
   return (
-    <Stack spacing={3}>
-      <Box sx={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'center',
-      }}>
-        <Typography variant="h5" fontWeight="bold">
-          Avaliação de Desempenho
-        </Typography>
-        <Button 
-          variant="contained" 
-          startIcon={<AddIcon />}
-          onClick={() => setDialogOpen(true)}
-        >
-          Nova Avaliação
-        </Button>
-      </Box>
+    <Container fluid>
+      <Row className="mb-4">
+        <Col>
+          <h2>Avaliações de Desempenho</h2>
+        </Col>
+        <Col xs="auto">
+          <Button 
+            variant="primary"
+            onClick={() => setDialogOpen(true)}
+          >
+            Nova Avaliação
+          </Button>
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <Card>
+            <Card.Body>
+              <PerformanceList />
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
 
       {dialogOpen && (
         <AvaliacaoPaginada
@@ -34,6 +41,8 @@ export default function AvaliacoesDesempenho() {
           }}
         />
       )}
-    </Stack>
+    </Container>
   );
-}
+};
+
+export default AvaliacoesDesempenho;
