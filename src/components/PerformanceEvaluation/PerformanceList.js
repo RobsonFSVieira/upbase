@@ -1,6 +1,15 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Container, Table, Button, ButtonGroup, Alert } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { 
+  Table, 
+  TableBody, 
+  TableCell, 
+  TableContainer, 
+  TableHead, 
+  TableRow, 
+  Paper, 
+  Button,
+  Box 
+} from '@mui/material';
 import { performanceService } from '../../services/performanceService';
 import { exportService } from '../../services/exportService';
 import PerformanceFilters from './PerformanceFilters';
@@ -97,7 +106,7 @@ const PerformanceList = ({ onError, onLoadingChange, isLoading }) => {
   }
 
   return (
-    <Container className="mt-4">
+    <Box className="mt-4">
       <PerformanceFilters 
         filters={filters}
         onFilterChange={handleFilterChange}
@@ -105,57 +114,64 @@ const PerformanceList = ({ onError, onLoadingChange, isLoading }) => {
       
       <div className="d-flex justify-content-between mb-3">
         <h2>Lista de Avaliações</h2>
-        <ButtonGroup>
+        <div>
           <Button 
-            variant="success" 
+            variant="contained" 
+            color="success" 
             onClick={handleExportExcel}
             disabled={!filteredEvaluations.length}
+            size="small"
           >
             Exportar Excel
           </Button>
           <Button 
-            variant="danger" 
+            variant="contained" 
+            color="error" 
             onClick={handleExportPDF}
             disabled={!filteredEvaluations.length}
+            size="small"
+            style={{ marginLeft: '8px' }}
           >
             Exportar PDF
           </Button>
-        </ButtonGroup>
+        </div>
       </div>
 
       {filteredEvaluations.length > 0 ? (
-        <Table striped bordered hover>
-          <thead>
-            <tr>
-              <th>Funcionário</th>
-              <th>Departamento</th>
-              <th>Período</th>
-              <th>Classificação</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredEvaluations.map((evaluation) => (
-              <tr key={evaluation.id}>
-                <td>{evaluation.employeeName}</td>
-                <td>{evaluation.department}</td>
-                <td>{evaluation.period}</td>
-                <td>{evaluation.rating}</td>
-                <td>
-                  <Button variant="info" size="sm" as={Link} to={`/performance-evaluation/${evaluation.id}`}>
-                    Ver Detalhes
-                  </Button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Funcionário</TableCell>
+                <TableCell>Departamento</TableCell>
+                <TableCell>Período</TableCell>
+                <TableCell>Classificação</TableCell>
+                <TableCell>Ações</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {filteredEvaluations.map((evaluation) => (
+                <TableRow key={evaluation.id}>
+                  <TableCell>{evaluation.employeeName}</TableCell>
+                  <TableCell>{evaluation.department}</TableCell>
+                  <TableCell>{evaluation.period}</TableCell>
+                  <TableCell>{evaluation.rating}</TableCell>
+                  <TableCell>
+                    <Button variant="contained" size="small" as={Link} to={`/performance-evaluation/${evaluation.id}`}>
+                      Ver Detalhes
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       ) : (
         <Alert variant="info">
           Nenhuma avaliação encontrada.
         </Alert>
       )}
-    </Container>
+    </Box>
   );
 };
 

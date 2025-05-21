@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { Container, Row, Col, Card, Alert, Spinner, Button } from 'react-bootstrap';
+import { Box, Typography, Card, Alert, Spinner, Button } from '@mui/material';
 import { Link } from 'react-router-dom';
 import PerformanceList from '../../../components/PerformanceEvaluation/PerformanceList';
 import AvaliacaoPaginada from '../../../features/avaliacoes/components/AvaliacaoPaginada';
@@ -20,45 +20,40 @@ const AvaliacoesDesempenho = () => {
   }, []);
 
   return (
-    <Container fluid>
+    <Box>
       {error && (
         <Alert variant="danger" onClose={() => setError(null)} dismissible>
           {error}
         </Alert>
       )}
       
-      <Row className="mb-4">
-        <Col>
-          <h2>Avaliações de Desempenho</h2>
-        </Col>
-        <Col xs="auto">
-          <Button 
-            variant="primary"
-            onClick={() => setDialogOpen(true)}
-          >
-            Nova Avaliação
-          </Button>
-        </Col>
-      </Row>
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={4}>
+        <Typography variant="h5" gutterBottom fontWeight="bold">
+          Avaliações de Desempenho
+        </Typography>
+        <Button 
+          variant="contained"
+          color="primary"
+          onClick={() => setDialogOpen(true)}
+        >
+          Nova Avaliação
+        </Button>
+      </Box>
       
-      <Row>
-        <Col>
-          <Card>
-            <Card.Body>
-              <PerformanceList 
-                onError={handleError} 
-                onLoadingChange={handleLoadingChange}
-                isLoading={isLoading}
-              />
-              {isLoading && (
-                <div className="text-center position-absolute top-50 start-50 translate-middle">
-                  <Spinner animation="border" />
-                </div>
-              )}
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
+      <Card>
+        <Box p={3}>
+          <PerformanceList 
+            onError={handleError} 
+            onLoadingChange={handleLoadingChange}
+            isLoading={isLoading}
+          />
+          {isLoading && (
+            <div className="text-center position-absolute top-50 start-50 translate-middle">
+              <Spinner animation="border" />
+            </div>
+          )}
+        </Box>
+      </Card>
 
       {dialogOpen && (
         <AvaliacaoPaginada
@@ -69,7 +64,7 @@ const AvaliacoesDesempenho = () => {
           }}
         />
       )}
-    </Container>
+    </Box>
   );
 };
 
