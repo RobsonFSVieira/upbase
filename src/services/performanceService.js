@@ -1,5 +1,3 @@
-import axios from 'axios';
-
 // Mock data para trabalhar localmente antes da integração com a API real
 const mockData = [
   {
@@ -34,116 +32,41 @@ const mockData = [
   }
 ];
 
-// Base URL para API
-const BASE_URL = process.env.REACT_APP_API_URL || 'https://api.example.com';
-
-// Cache de dados para evitar múltiplas requisições
-let cachedData = null;
-
+// Versão simplificada do serviço focada em dados mockados
 export const performanceService = {
-  async getAll() {
-    try {
-      // Garantir que sempre teremos dados, mesmo em caso de falha
-      if (cachedData) {
-        console.log('Usando dados em cache');
-        return cachedData;
-      }
-
-      // Simplificando a lógica para evitar falhas em produção
-      if (process.env.NODE_ENV === 'production') {
-        try {
-          const response = await axios.get(`${BASE_URL}/performance`);
-          if (response && response.data) {
-            cachedData = response.data;
-            return response.data;
-          }
-        } catch (apiError) {
-          console.error('Erro na API em produção:', apiError);
-          // Usar mock data em caso de erro na produção também
-        }
-      }
-      
-      // Usar mock data em desenvolvimento e como fallback em produção
-      console.log('Usando dados mockados para avaliações');
-      cachedData = [...mockData];
-      return cachedData;
-    } catch (error) {
-      console.error('Erro ao buscar avaliações:', error);
-      // Garantir que sempre retornamos dados, mesmo em caso de erro
-      return mockData; 
-    }
+  getAll() {
+    console.log('Fornecendo dados mockados para avaliações');
+    return Promise.resolve([...mockData]);
   },
 
-  // Resetar cache quando novos dados forem criados ou atualizados
-  resetCache() {
-    cachedData = null;
+  getById(id) {
+    const item = mockData.find(item => item.id === parseInt(id));
+    return Promise.resolve(item || null);
   },
 
-  async getById(id) {
-    try {
-      // Buscar do cache primeiro se disponível
-      if (cachedData) {
-        const cachedItem = cachedData.find(item => item.id === parseInt(id));
-        if (cachedItem) {
-          return Promise.resolve(cachedItem);
-        }
-      }
-
-      if (process.env.NODE_ENV !== 'production' || BASE_URL === 'https://api.example.com') {
-        const item = mockData.find(item => item.id === parseInt(id));
-        return Promise.resolve(item || null);
-      }
-      
-      const response = await axios.get(`${BASE_URL}/performance/${id}`);
-      return response.data;
-    } catch (error) {
-      console.error(`Erro ao buscar avaliação ${id}:`, error);
-      return mockData.find(item => item.id === parseInt(id)) || null;
-    }
+  create(data) {
+    const newId = Math.max(...mockData.map(item => item.id)) + 1;
+    const newItem = { ...data, id: newId };
+    mockData.push(newItem);
+    return Promise.resolve(newItem);
   },
 
-  async create(data) {
-    try {
-      if (process.env.NODE_ENV === 'production' && BASE_URL !== 'https://api.example.com') {
-        const response = await axios.post(`${BASE_URL}/performance`, data);
-        return response.data;
-      }
-      return { ...data, id: mockData.length + 1 };
-    } catch (error) {
-      console.error('Erro ao criar avaliação:', error);
-      throw error;
+  update(id, data) {
+    const index = mockData.findIndex(item => item.id === parseInt(id));
+    if (index >= 0) {
+      mockData[index] = { ...data, id: parseInt(id) };
+      return Promise.resolve(mockData[index]);
     }
+    return Promise.resolve(null);
   },
 
-  async update(id, data) {
-    try {
-      if (process.env.NODE_ENV === 'production' && BASE_URL !== 'https://api.example.com') {
-        const response = await axios.put(`${BASE_URL}/performance/${id}`, data);
-        return response.data;
-      }
-      return { ...data, id: parseInt(id) };
-    } catch (error) {
-      console.error(`Erro ao atualizar avaliação ${id}:`, error);
-      throw error;
+  delete(id) {
+    const index = mockData.findIndex(item => item.id === parseInt(id));
+    if (index >= 0) {
+      mockData.splice(index, 1);
+      return Promise.resolve(true);
     }
-  },
-
-  async delete(id) {
-    try {
-      if (process.env.NODE_ENV === 'production' && BASE_URL !== 'https://api.example.com') {
-        await axios.delete(`${BASE_URL}/performance/${id}`);
-        return true;
-      }
-      const index = mockData.findIndex(item => item.id === parseInt(id));
-      if (index >= 0) {
-        mockData.splice(index, 1);
-        return true;
-      }
-      return false;
-    } catch (error) {
-      console.error(`Erro ao deletar avaliação ${id}:`, error);
-      return false;
-    }
+    return Promise.resolve(false);
   }
 };
 

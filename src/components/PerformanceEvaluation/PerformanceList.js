@@ -17,46 +17,22 @@ import { performanceService } from '../../services/performanceService';
 
 const PerformanceList = ({ onError, onLoadingChange }) => {
   const [evaluations, setEvaluations] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
-    let isMounted = true;
-
-    const loadEvaluations = async () => {
+    async function fetchData() {
       try {
-        // Garantir que notificamos o componente pai sobre o estado de loading
         if (onLoadingChange) onLoadingChange(true);
-        setLoading(true);
-        
-        // Lidar com possíveis erros
         const data = await performanceService.getAll();
-        
-        // Verificar se o componente ainda está montado
-        if (isMounted) {
-          console.log('Dados carregados com sucesso:', data);
-          setEvaluations(Array.isArray(data) ? data : []);
-          setError(null);
-        }
+        setEvaluations(data);
       } catch (error) {
         console.error('Erro ao carregar avaliações:', error);
-        if (isMounted) {
-          setError(error.message || 'Erro ao carregar avaliações');
-          if (onError) onError(error);
-        }
+        if (onError) onError(error);
       } finally {
-        if (isMounted) {
-          setLoading(false);
-          if (onLoadingChange) onLoadingChange(false);
-        }
+        if (onLoadingChange) onLoadingChange(false);
       }
-    };
-
-    loadEvaluations();
-
-    return () => {
-      isMounted = false;
-    };
+    }
+    
+    fetchData();
   }, [onError, onLoadingChange]);
 
   // Mostrar mensagem de erro em caso de falha
