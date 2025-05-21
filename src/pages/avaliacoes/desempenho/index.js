@@ -1,14 +1,27 @@
 import React, { useState } from 'react';
-import { Container, Row, Col, Card, Button } from 'react-bootstrap';
+import { Container, Row, Col, Card, Alert, Spinner } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import PerformanceList from '../../../components/PerformanceEvaluation/PerformanceList';
 import AvaliacaoPaginada from '../../../features/avaliacoes/components/AvaliacaoPaginada';
 
 const AvaliacoesDesempenho = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleError = (error) => {
+    console.error('Erro:', error);
+    setError('Ocorreu um erro ao carregar os dados. Por favor, tente novamente.');
+  };
 
   return (
     <Container fluid>
+      {error && (
+        <Alert variant="danger" onClose={() => setError(null)} dismissible>
+          {error}
+        </Alert>
+      )}
+      
       <Row className="mb-4">
         <Col>
           <h2>Avaliações de Desempenho</h2>
@@ -22,11 +35,18 @@ const AvaliacoesDesempenho = () => {
           </Button>
         </Col>
       </Row>
+      
       <Row>
         <Col>
           <Card>
             <Card.Body>
-              <PerformanceList />
+              {loading ? (
+                <div className="text-center">
+                  <Spinner animation="border" />
+                </div>
+              ) : (
+                <PerformanceList onError={handleError} setLoading={setLoading} />
+              )}
             </Card.Body>
           </Card>
         </Col>

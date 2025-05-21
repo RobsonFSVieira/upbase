@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Table, Button, ButtonGroup } from 'react-bootstrap';
+import { Container, Table, Button, ButtonGroup, Alert } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { performanceService } from '../../services/performanceService';
 import { exportService } from '../../services/exportService';
 import PerformanceFilters from './PerformanceFilters';
 
-const PerformanceList = () => {
+const PerformanceList = ({ onError, setLoading }) => {
   const [evaluations, setEvaluations] = useState([]);
   const [filteredEvaluations, setFilteredEvaluations] = useState([]);
   const [filters, setFilters] = useState({
@@ -25,11 +25,16 @@ const PerformanceList = () => {
 
   const loadEvaluations = async () => {
     try {
+      setLoading(true);
       const response = await performanceService.getAll();
-      setEvaluations(response);
-      setFilteredEvaluations(response);
+      setEvaluations(response || []);
+      setFilteredEvaluations(response || []);
     } catch (error) {
-      console.error('Erro ao carregar avaliações:', error);
+      onError(error);
+      setEvaluations([]);
+      setFilteredEvaluations([]);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -98,44 +103,52 @@ const PerformanceList = () => {
           <Button 
             variant="success" 
             onClick={handleExportExcel}
+            disabled={!filteredEvaluations.length}
           >
             Exportar Excel
           </Button>
           <Button 
             variant="danger" 
             onClick={handleExportPDF}
+            disabled={!filteredEvaluations.length}
           >
             Exportar PDF
           </Button>
         </ButtonGroup>
       </div>
 
-      <Table striped bordered hover>
-        <thead>
-          <tr>
-            <th>Funcionário</th>
-            <th>Departamento</th>
-            <th>Período</th>
-            <th>Classificação</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredEvaluations.map((evaluation) => (
-            <tr key={evaluation.id}>
-              <td>{evaluation.employeeName}</td>
-              <td>{evaluation.department}</td>
-              <td>{evaluation.period}</td>
-              <td>{evaluation.rating}</td>
-              <td>
-                <Button variant="info" size="sm" as={Link} to={`/performance-evaluation/${evaluation.id}`}>
-                  Ver Detalhes
-                </Button>
-              </td>
+      {filteredEvaluations.length > 0 ? (
+        <Table striped bordered hover>
+          <thead>
+            <tr>
+              <th>Funcionário</th>
+              <th>Departamento</th>
+              <th>Período</th>
+              <th>Classificação</th>
+              <th>Ações</th>
             </tr>
-          ))}
-        </tbody>
-      </Table>
+          </thead>
+          <tbody>
+            {filteredEvaluations.map((evaluation) => (
+              <tr key={evaluation.id}>
+                <td>{evaluation.employeeName}</td>
+                <td>{evaluation.department}</td>
+                <td>{evaluation.period}</td>
+                <td>{evaluation.rating}</td>
+                <td>
+                  <Button variant="info" size="sm" as={Link} to={`/performance-evaluation/${evaluation.id}`}>
+                    Ver Detalhes
+                  </Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      ) : (
+        <Alert variant="info">
+          Nenhuma avaliação encontrada.
+        </Alert>
+      )}
     </Container>
   );
 };
