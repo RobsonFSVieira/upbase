@@ -58,6 +58,7 @@ const menuItems = [
         }}
       />
     ),
+    path: '/avaliacoes',
     subItems: [
       {
         text: 'Desempenho',
@@ -101,17 +102,35 @@ function MainLayout({ children }) {
       <Toolbar />
       <List>
         {menuItems.map((item) => (
-          <ListItem
-            button
-            key={item.text}
-            onClick={() => {
-              navigate(item.path);
-              if (isMobile) handleDrawerToggle();
-            }}
-          >
-            <ListItemIcon>{item.icon}</ListItemIcon>
-            <ListItemText primary={item.text} />
-          </ListItem>
+          <React.Fragment key={item.text}>
+            <ListItem
+              button
+              onClick={() => {
+                navigate(item.path);
+                if (isMobile) handleDrawerToggle();
+              }}
+            >
+              <ListItemIcon>{item.icon}</ListItemIcon>
+              <ListItemText primary={item.text} />
+            </ListItem>
+            {item.subItems && (
+              <List disablePadding>
+                {item.subItems.map((subItem) => (
+                  <ListItem
+                    button
+                    key={subItem.path}
+                    onClick={() => {
+                      navigate(subItem.path);
+                      if (isMobile) handleDrawerToggle();
+                    }}
+                    sx={{ pl: 4 }}
+                  >
+                    <ListItemText primary={subItem.text} />
+                  </ListItem>
+                ))}
+              </List>
+            )}
+          </React.Fragment>
         ))}
       </List>
     </div>
