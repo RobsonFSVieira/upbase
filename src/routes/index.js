@@ -28,6 +28,10 @@ export const routes = [
     element: PerformanceForm
   },
   {
+    path: '/performance/edit/:id',
+    element: PerformanceForm
+  },
+  {
     path: '/performance/:id',
     element: PerformanceDetail
   },
