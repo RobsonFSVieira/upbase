@@ -13,7 +13,8 @@ import {
   MenuItem,
   Typography,
   IconButton,
-  CircularProgress
+  CircularProgress,
+  Box
 } from '@mui/material';
 import { Close as CloseIcon } from '@mui/icons-material';
 import { useParams, useNavigate } from 'react-router-dom';
