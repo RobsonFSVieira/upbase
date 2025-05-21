@@ -8,7 +8,8 @@ import getTheme from './utils/theme';
 
 import MainLayout from './components/Layout/MainLayout';
 import Home from './pages/Home';
-import Avaliacoes from './pages/avaliacoes';
+import AvaliacoesDesempenho from './pages/avaliacoes/desempenho';
+import AvaliacoesExperiencia from './pages/avaliacoes/experiencia';
 
 function ThemedApp() {
   const { isDarkMode } = useTheme();
@@ -21,9 +22,9 @@ function ThemedApp() {
         <MainLayout>
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/avaliacoes" element={<Avaliacoes />} />
+            <Route path="/avaliacoes/desempenho" element={<AvaliacoesDesempenho />} />
+            <Route path="/avaliacoes/experiencia" element={<AvaliacoesExperiencia />} />
             <Route path="/colaboradores" element={<div>Colaboradores em breve</div>} />
-            <Route path="/feedbacks" element={<div>Feedbacks em breve</div>} />
           </Routes>
         </MainLayout>
       </BrowserRouter>

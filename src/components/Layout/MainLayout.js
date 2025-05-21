@@ -58,7 +58,16 @@ const menuItems = [
         }}
       />
     ),
-    path: '/avaliacoes',
+    subItems: [
+      {
+        text: 'Desempenho',
+        path: '/avaliacoes/desempenho',
+      },
+      {
+        text: 'Experiência',
+        path: '/avaliacoes/experiencia',
+      },
+    ],
   },
   {
     text: 'Colaboradores',
@@ -72,19 +81,6 @@ const menuItems = [
       />
     ),
     path: '/colaboradores',
-  },
-  {
-    text: 'Feedbacks',
-    icon: (
-      <FeedbackOutlined
-        sx={{
-          color: (theme) =>
-            theme.palette.mode === 'light' ? '#FFFFFF' : '#94A3B8',
-          fontSize: '24px',
-        }}
-      />
-    ),
-    path: '/feedbacks',
   },
 ];
 
