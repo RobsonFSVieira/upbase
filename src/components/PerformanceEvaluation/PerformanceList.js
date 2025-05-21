@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import { 
   Table, 
   TableBody, 
@@ -163,7 +164,12 @@ const PerformanceList = ({ onError, onLoadingChange, isLoading }) => {
                   <TableCell>{evaluation.period}</TableCell>
                   <TableCell>{evaluation.rating}</TableCell>
                   <TableCell>
-                    <Button variant="contained" size="small" as={Link} to={`/performance-evaluation/${evaluation.id}`}>
+                    <Button 
+                      variant="contained" 
+                      size="small" 
+                      component={Link} 
+                      to={`/performance-evaluation/${evaluation.id}`}
+                    >
                       Ver Detalhes
                     </Button>
                   </TableCell>
