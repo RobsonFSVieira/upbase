@@ -1,16 +1,15 @@
 import React, { useState, useCallback } from 'react';
 import { Box, Typography, Card, Alert, CircularProgress, Button } from '@mui/material';
-import { Link } from 'react-router-dom';
 import PerformanceList from '../../../components/PerformanceEvaluation/PerformanceList';
-import AvaliacaoPaginada from '../../../features/avaliacoes/components/AvaliacaoPaginada';
 
 const AvaliacoesDesempenho = () => {
+  console.log('Renderizando AvaliacoesDesempenho');
   const [dialogOpen, setDialogOpen] = useState(false);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const handleError = useCallback((error) => {
-    console.error('Erro:', error);
+    console.error('Erro na avaliação de desempenho:', error);
     setError('Ocorreu um erro ao carregar os dados. Por favor, tente novamente.');
     setIsLoading(false);
   }, []);
@@ -21,8 +20,9 @@ const AvaliacoesDesempenho = () => {
 
   return (
     <Box>
+      {console.log('Rendering AvaliacoesDesempenho component')}
       {error && (
-        <Alert variant="danger" onClose={() => setError(null)} dismissible>
+        <Alert severity="error" onClose={() => setError(null)}>
           {error}
         </Alert>
       )}
@@ -42,28 +42,19 @@ const AvaliacoesDesempenho = () => {
       
       <Card>
         <Box p={3}>
-          <PerformanceList 
-            onError={handleError} 
-            onLoadingChange={handleLoadingChange}
-            isLoading={isLoading}
-          />
-          {isLoading && (
+          {isLoading ? (
             <Box display="flex" justifyContent="center" alignItems="center" p={3}>
               <CircularProgress />
             </Box>
+          ) : (
+            <PerformanceList 
+              onError={handleError} 
+              onLoadingChange={handleLoadingChange}
+              isLoading={isLoading}
+            />
           )}
         </Box>
       </Card>
-
-      {dialogOpen && (
-        <AvaliacaoPaginada
-          onClose={() => setDialogOpen(false)}
-          onComplete={() => {
-            setDialogOpen(false);
-            // Implementar lógica de conclusão
-          }}
-        />
-      )}
     </Box>
   );
 };

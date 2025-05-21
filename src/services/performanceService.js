@@ -1,30 +1,87 @@
 import axios from 'axios';
 
-const BASE_URL = 'YOUR_API_URL/performance';
+// Mock data para desenvolvimento
+const mockData = [
+  {
+    id: 1,
+    employeeName: 'João Silva',
+    department: 'Desenvolvimento',
+    period: '2023 Q1',
+    goals: 'Completou todas as tarefas designadas',
+    skills: 'Demonstrou habilidades técnicas excelentes',
+    rating: '5',
+    comments: 'Excelente desempenho'
+  },
+  {
+    id: 2,
+    employeeName: 'Maria Oliveira',
+    department: 'Marketing',
+    period: '2023 Q1',
+    goals: 'Atingiu 90% das metas estabelecidas',
+    skills: 'Boa comunicação e trabalho em equipe',
+    rating: '4',
+    comments: 'Bom desempenho geral'
+  }
+];
+
+// Base URL para API
+const BASE_URL = process.env.REACT_APP_API_URL || 'https://api.example.com';
 
 export const performanceService = {
   async getAll() {
-    const response = await axios.get(BASE_URL);
-    return response.data;
+    try {
+      // Em produção, usar a API real
+      if (process.env.NODE_ENV === 'production' && BASE_URL !== 'https://api.example.com') {
+        const response = await axios.get(`${BASE_URL}/performance`);
+        return response.data;
+      }
+      
+      // Em desenvolvimento, usar mock data
+      console.log('Usando dados mockados para avaliações');
+      return mockData;
+    } catch (error) {
+      console.error('Erro ao buscar avaliações:', error);
+      return mockData; // Fallback para mock data
+    }
   },
 
   async getById(id) {
-    const response = await axios.get(`${BASE_URL}/${id}`);
-    return response.data;
+    try {
+      if (process.env.NODE_ENV === 'production' && BASE_URL !== 'https://api.example.com') {
+        const response = await axios.get(`${BASE_URL}/performance/${id}`);
+        return response.data;
+      }
+      return mockData.find(item => item.id === parseInt(id)) || null;
+    } catch (error) {
+      console.error(`Erro ao buscar avaliação ${id}:`, error);
+      return mockData.find(item => item.id === parseInt(id)) || null;
+    }
   },
 
   async create(data) {
-    const response = await axios.post(BASE_URL, data);
-    return response.data;
+    try {
+      if (process.env.NODE_ENV === 'production' && BASE_URL !== 'https://api.example.com') {
+        const response = await axios.post(`${BASE_URL}/performance`, data);
+        return response.data;
+      }
+      return { ...data, id: mockData.length + 1 };
+    } catch (error) {
+      console.error('Erro ao criar avaliação:', error);
+      throw error;
+    }
   },
 
   async update(id, data) {
-    const response = await axios.put(`${BASE_URL}/${id}`, data);
-    return response.data;
-  },
-
-  async delete(id) {
-    await axios.delete(`${BASE_URL}/${id}`);
+    try {
+      if (process.env.NODE_ENV === 'production' && BASE_URL !== 'https://api.example.com') {
+        const response = await axios.put(`${BASE_URL}/performance/${id}`, data);
+        return response.data;
+      }
+      return { ...data, id: parseInt(id) };
+    } catch (error) {
+      console.error(`Erro ao atualizar avaliação ${id}:`, error);
+      throw error;
+    }
   }
 };
 

@@ -10,37 +10,31 @@ import {
   Paper, 
   Button,
   Box,
-  CircularProgress,
-  Alert 
+  Alert,
+  Stack
 } from '@mui/material';
 import { performanceService } from '../../services/performanceService';
-import { exportService } from '../../services/exportService';
-import PerformanceFilters from './PerformanceFilters';
 
-const PerformanceList = ({ onError, onLoadingChange, isLoading }) => {
+const PerformanceList = ({ onError, onLoadingChange }) => {
   const [evaluations, setEvaluations] = useState([]);
   const [filteredEvaluations, setFilteredEvaluations] = useState([]);
-  const [filters, setFilters] = useState({
-    employeeName: '',
-    department: '',
-    period: '',
-    rating: ''
-  });
 
   const loadEvaluations = useCallback(async () => {
     try {
-      onLoadingChange(true);
+      if (onLoadingChange) onLoadingChange(true);
+      console.log('Carregando avaliações...');
       const response = await performanceService.getAll();
-      if (response) {
-        setEvaluations(response);
-        setFilteredEvaluations(response);
-      }
+      console.log('Avaliações carregadas:', response);
+      
+      setEvaluations(response || []);
+      setFilteredEvaluations(response || []);
     } catch (error) {
-      onError(error);
+      console.error('Erro ao carregar avaliações:', error);
+      if (onError) onError(error);
       setEvaluations([]);
       setFilteredEvaluations([]);
     } finally {
-      onLoadingChange(false);
+      if (onLoadingChange) onLoadingChange(false);
     }
   }, [onLoadingChange, onError]);
 
@@ -48,85 +42,22 @@ const PerformanceList = ({ onError, onLoadingChange, isLoading }) => {
     loadEvaluations();
   }, [loadEvaluations]);
 
-  useEffect(() => {
-    applyFilters();
-  }, [filters, evaluations]);
-
-  const handleFilterChange = (e) => {
-    setFilters({
-      ...filters,
-      [e.target.name]: e.target.value
-    });
-  };
-
-  const applyFilters = () => {
-    let filtered = evaluations;
-
-    if (filters.employeeName) {
-      filtered = filtered.filter(item => 
-        item.employeeName.toLowerCase().includes(filters.employeeName.toLowerCase())
-      );
-    }
-    if (filters.department) {
-      filtered = filtered.filter(item =>
-        item.department.toLowerCase().includes(filters.department.toLowerCase())
-      );
-    }
-    if (filters.period) {
-      filtered = filtered.filter(item =>
-        item.period.includes(filters.period)
-      );
-    }
-    if (filters.rating) {
-      filtered = filtered.filter(item =>
-        item.rating === filters.rating
-      );
-    }
-
-    setFilteredEvaluations(filtered);
-  };
-
-  const handleExportExcel = () => {
-    try {
-      exportService.toExcel(filteredEvaluations);
-    } catch (error) {
-      console.error('Erro ao exportar para Excel:', error);
-      // Adicione aqui sua lógica de tratamento de erro (ex: toast, alert, etc)
-    }
-  };
-
-  const handleExportPDF = () => {
-    try {
-      exportService.toPDF(filteredEvaluations);
-    } catch (error) {
-      console.error('Erro ao exportar para PDF:', error);
-      // Adicione aqui sua lógica de tratamento de erro (ex: toast, alert, etc)
-    }
-  };
-
-  if (isLoading) {
+  if (!filteredEvaluations || filteredEvaluations.length === 0) {
     return (
-      <Box display="flex" justifyContent="center" p={3}>
-        <CircularProgress />
-      </Box>
+      <Alert severity="info">
+        Nenhuma avaliação encontrada. Clique em "Nova Avaliação" para adicionar.
+      </Alert>
     );
   }
 
   return (
-    <Box className="mt-4">
-      <PerformanceFilters 
-        filters={filters}
-        onFilterChange={handleFilterChange}
-      />
-      
-      <div className="d-flex justify-content-between mb-3">
-        <h2>Lista de Avaliações</h2>
-        <div>
+    <Box>
+      <Stack direction="row" justifyContent="space-between" mb={2}>
+        <Box></Box>
+        <Stack direction="row" spacing={1}>
           <Button 
             variant="contained" 
             color="success" 
-            onClick={handleExportExcel}
-            disabled={!filteredEvaluations.length}
             size="small"
           >
             Exportar Excel
@@ -134,55 +65,46 @@ const PerformanceList = ({ onError, onLoadingChange, isLoading }) => {
           <Button 
             variant="contained" 
             color="error" 
-            onClick={handleExportPDF}
-            disabled={!filteredEvaluations.length}
             size="small"
-            style={{ marginLeft: '8px' }}
           >
             Exportar PDF
           </Button>
-        </div>
-      </div>
+        </Stack>
+      </Stack>
 
-      {filteredEvaluations.length > 0 ? (
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Funcionário</TableCell>
-                <TableCell>Departamento</TableCell>
-                <TableCell>Período</TableCell>
-                <TableCell>Classificação</TableCell>
-                <TableCell>Ações</TableCell>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Funcionário</TableCell>
+              <TableCell>Departamento</TableCell>
+              <TableCell>Período</TableCell>
+              <TableCell>Classificação</TableCell>
+              <TableCell>Ações</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {filteredEvaluations.map((evaluation) => (
+              <TableRow key={evaluation.id}>
+                <TableCell>{evaluation.employeeName}</TableCell>
+                <TableCell>{evaluation.department}</TableCell>
+                <TableCell>{evaluation.period}</TableCell>
+                <TableCell>{evaluation.rating}</TableCell>
+                <TableCell>
+                  <Button 
+                    variant="contained" 
+                    size="small" 
+                    component={Link} 
+                    to={`/performance/${evaluation.id}`}
+                  >
+                    Ver Detalhes
+                  </Button>
+                </TableCell>
               </TableRow>
-            </TableHead>
-            <TableBody>
-              {filteredEvaluations.map((evaluation) => (
-                <TableRow key={evaluation.id}>
-                  <TableCell>{evaluation.employeeName}</TableCell>
-                  <TableCell>{evaluation.department}</TableCell>
-                  <TableCell>{evaluation.period}</TableCell>
-                  <TableCell>{evaluation.rating}</TableCell>
-                  <TableCell>
-                    <Button 
-                      variant="contained" 
-                      size="small" 
-                      component={Link} 
-                      to={`/performance-evaluation/${evaluation.id}`}
-                    >
-                      Ver Detalhes
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      ) : (
-        <Alert variant="info">
-          Nenhuma avaliação encontrada.
-        </Alert>
-      )}
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </Box>
   );
 };
