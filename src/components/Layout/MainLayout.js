@@ -114,16 +114,16 @@ function MainLayout({ children }) {
               <ListItemText primary={item.text} />
             </ListItem>
             {item.subItems && (
-              <List disablePadding>
+              <List component="div" disablePadding>
                 {item.subItems.map((subItem) => (
                   <ListItem
                     button
                     key={subItem.path}
+                    sx={{ pl: 4 }}
                     onClick={() => {
                       navigate(subItem.path);
                       if (isMobile) handleDrawerToggle();
                     }}
-                    sx={{ pl: 4 }}
                   >
                     <ListItemText primary={subItem.text} />
                   </ListItem>
