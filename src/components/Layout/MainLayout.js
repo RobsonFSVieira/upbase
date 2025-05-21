@@ -20,6 +20,8 @@ import {
   DarkMode,
   NotificationsOutlined,
   AccountCircleOutlined,
+  ExpandMore,
+  ExpandLess,
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useTheme as useThemeContext } from '../../contexts/ThemeContext';
@@ -88,6 +90,7 @@ const menuItems = [
 function MainLayout({ children }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [logoError, setLogoError] = useState(false); // Adicionando o state para o logo
+  const [expandedMenu, setExpandedMenu] = useState('');
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const navigate = useNavigate();
@@ -95,6 +98,15 @@ function MainLayout({ children }) {
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
+  };
+
+  const handleMenuClick = (item) => {
+    if (item.subItems) {
+      setExpandedMenu(expandedMenu === item.text ? '' : item.text);
+    } else {
+      navigate(item.path);
+      if (isMobile) handleDrawerToggle();
+    }
   };
 
   const drawer = (
@@ -105,16 +117,29 @@ function MainLayout({ children }) {
           <React.Fragment key={item.text}>
             <ListItem
               button
-              onClick={() => {
-                navigate(item.path);
-                if (isMobile) handleDrawerToggle();
+              onClick={() => handleMenuClick(item)}
+              sx={{
+                bgcolor:
+                  expandedMenu === item.text
+                    ? 'rgba(255, 255, 255, 0.08)'
+                    : 'transparent',
               }}
             >
               <ListItemIcon>{item.icon}</ListItemIcon>
               <ListItemText primary={item.text} />
+              {item.subItems && (
+                expandedMenu === item.text ? <ExpandLess /> : <ExpandMore />
+              )}
             </ListItem>
             {item.subItems && (
-              <List component="div" disablePadding>
+              <List
+                component="div"
+                disablePadding
+                sx={{
+                  display: expandedMenu === item.text ? 'block' : 'none',
+                  transition: 'all 0.3s ease',
+                }}
+              >
                 {item.subItems.map((subItem) => (
                   <ListItem
                     button
