@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   Table, 
@@ -10,39 +10,36 @@ import {
   Paper, 
   Button,
   Box,
-  Alert,
-  Stack
+  Typography,
+  Alert
 } from '@mui/material';
 import { performanceService } from '../../services/performanceService';
 
 const PerformanceList = ({ onError, onLoadingChange }) => {
   const [evaluations, setEvaluations] = useState([]);
-  const [filteredEvaluations, setFilteredEvaluations] = useState([]);
-
-  const loadEvaluations = useCallback(async () => {
-    try {
-      if (onLoadingChange) onLoadingChange(true);
-      console.log('Carregando avaliações...');
-      const response = await performanceService.getAll();
-      console.log('Avaliações carregadas:', response);
-      
-      setEvaluations(response || []);
-      setFilteredEvaluations(response || []);
-    } catch (error) {
-      console.error('Erro ao carregar avaliações:', error);
-      if (onError) onError(error);
-      setEvaluations([]);
-      setFilteredEvaluations([]);
-    } finally {
-      if (onLoadingChange) onLoadingChange(false);
-    }
-  }, [onLoadingChange, onError]);
 
   useEffect(() => {
-    loadEvaluations();
-  }, [loadEvaluations]);
+    const loadEvaluations = async () => {
+      try {
+        if (onLoadingChange) onLoadingChange(true);
+        console.log('Carregando avaliações...');
+        
+        const data = await performanceService.getAll();
+        console.log('Avaliações carregadas:', data);
+        
+        setEvaluations(data || []);
+      } catch (error) {
+        console.error('Erro ao carregar avaliações:', error);
+        if (onError) onError(error);
+      } finally {
+        if (onLoadingChange) onLoadingChange(false);
+      }
+    };
 
-  if (!filteredEvaluations || filteredEvaluations.length === 0) {
+    loadEvaluations();
+  }, [onLoadingChange, onError]);
+
+  if (!evaluations || evaluations.length === 0) {
     return (
       <Alert severity="info">
         Nenhuma avaliação encontrada. Clique em "Nova Avaliação" para adicionar.
@@ -52,27 +49,11 @@ const PerformanceList = ({ onError, onLoadingChange }) => {
 
   return (
     <Box>
-      <Stack direction="row" justifyContent="space-between" mb={2}>
-        <Box></Box>
-        <Stack direction="row" spacing={1}>
-          <Button 
-            variant="contained" 
-            color="success" 
-            size="small"
-          >
-            Exportar Excel
-          </Button>
-          <Button 
-            variant="contained" 
-            color="error" 
-            size="small"
-          >
-            Exportar PDF
-          </Button>
-        </Stack>
-      </Stack>
+      <Typography variant="h6" gutterBottom>
+        Lista de Avaliações de Desempenho
+      </Typography>
 
-      <TableContainer component={Paper}>
+      <TableContainer component={Paper} sx={{ mt: 2 }}>
         <Table>
           <TableHead>
             <TableRow>
@@ -84,7 +65,7 @@ const PerformanceList = ({ onError, onLoadingChange }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredEvaluations.map((evaluation) => (
+            {evaluations.map((evaluation) => (
               <TableRow key={evaluation.id}>
                 <TableCell>{evaluation.employeeName}</TableCell>
                 <TableCell>{evaluation.department}</TableCell>

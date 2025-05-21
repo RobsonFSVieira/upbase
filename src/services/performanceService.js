@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-// Mock data para desenvolvimento
+// Mock data para trabalhar localmente antes da integração com a API real
 const mockData = [
   {
     id: 1,
@@ -21,6 +21,16 @@ const mockData = [
     skills: 'Boa comunicação e trabalho em equipe',
     rating: '4',
     comments: 'Bom desempenho geral'
+  },
+  {
+    id: 3,
+    employeeName: 'Carlos Santos',
+    department: 'Recursos Humanos',
+    period: '2023 Q2',
+    goals: 'Concluiu os processos seletivos no prazo',
+    skills: 'Excelente capacidade de organização',
+    rating: '4',
+    comments: 'Colaborador dedicado'
   }
 ];
 
@@ -81,6 +91,24 @@ export const performanceService = {
     } catch (error) {
       console.error(`Erro ao atualizar avaliação ${id}:`, error);
       throw error;
+    }
+  },
+
+  async delete(id) {
+    try {
+      if (process.env.NODE_ENV === 'production' && BASE_URL !== 'https://api.example.com') {
+        await axios.delete(`${BASE_URL}/performance/${id}`);
+        return true;
+      }
+      const index = mockData.findIndex(item => item.id === parseInt(id));
+      if (index >= 0) {
+        mockData.splice(index, 1);
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error(`Erro ao deletar avaliação ${id}:`, error);
+      return false;
     }
   }
 };

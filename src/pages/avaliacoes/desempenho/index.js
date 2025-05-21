@@ -1,26 +1,23 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import { Box, Typography, Card, Alert, CircularProgress, Button } from '@mui/material';
 import PerformanceList from '../../../components/PerformanceEvaluation/PerformanceList';
 
 const AvaliacoesDesempenho = () => {
-  console.log('Renderizando AvaliacoesDesempenho');
   const [dialogOpen, setDialogOpen] = useState(false);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const handleError = useCallback((error) => {
+  const handleError = (error) => {
     console.error('Erro na avaliação de desempenho:', error);
     setError('Ocorreu um erro ao carregar os dados. Por favor, tente novamente.');
-    setIsLoading(false);
-  }, []);
+  };
 
-  const handleLoadingChange = useCallback((loading) => {
+  const handleLoadingChange = (loading) => {
     setIsLoading(loading);
-  }, []);
+  };
 
   return (
     <Box>
-      {console.log('Rendering AvaliacoesDesempenho component')}
       {error && (
         <Alert severity="error" onClose={() => setError(null)}>
           {error}
@@ -28,7 +25,7 @@ const AvaliacoesDesempenho = () => {
       )}
       
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={4}>
-        <Typography variant="h5" gutterBottom fontWeight="bold">
+        <Typography variant="h5" fontWeight="bold">
           Avaliações de Desempenho
         </Typography>
         <Button 
@@ -50,7 +47,6 @@ const AvaliacoesDesempenho = () => {
             <PerformanceList 
               onError={handleError} 
               onLoadingChange={handleLoadingChange}
-              isLoading={isLoading}
             />
           )}
         </Box>
