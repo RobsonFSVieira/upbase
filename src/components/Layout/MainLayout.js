@@ -111,7 +111,8 @@ function MainLayout({ children }) {
 
   const drawer = (
     <div>
-      <Toolbar />
+      {/* Toolbar apenas aparece em mobile */}
+      {isMobile && <Toolbar />}
       <List>
         {menuItems.map((item) => (
           <React.Fragment key={item.text}>
