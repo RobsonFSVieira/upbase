@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Container, Row, Col, Card, Alert, Spinner, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import PerformanceList from '../../../components/PerformanceEvaluation/PerformanceList';
@@ -7,12 +7,17 @@ import AvaliacaoPaginada from '../../../features/avaliacoes/components/Avaliacao
 const AvaliacoesDesempenho = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const handleError = (error) => {
+  const handleError = useCallback((error) => {
     console.error('Erro:', error);
     setError('Ocorreu um erro ao carregar os dados. Por favor, tente novamente.');
-  };
+    setIsLoading(false);
+  }, []);
+
+  const handleLoadingChange = useCallback((loading) => {
+    setIsLoading(loading);
+  }, []);
 
   return (
     <Container fluid>
@@ -40,12 +45,15 @@ const AvaliacoesDesempenho = () => {
         <Col>
           <Card>
             <Card.Body>
-              {loading ? (
-                <div className="text-center">
+              <PerformanceList 
+                onError={handleError} 
+                onLoadingChange={handleLoadingChange}
+                isLoading={isLoading}
+              />
+              {isLoading && (
+                <div className="text-center position-absolute top-50 start-50 translate-middle">
                   <Spinner animation="border" />
                 </div>
-              ) : (
-                <PerformanceList onError={handleError} setLoading={setLoading} />
               )}
             </Card.Body>
           </Card>

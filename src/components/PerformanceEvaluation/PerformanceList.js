@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Container, Table, Button, ButtonGroup, Alert } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { performanceService } from '../../services/performanceService';
 import { exportService } from '../../services/exportService';
 import PerformanceFilters from './PerformanceFilters';
 
-const PerformanceList = ({ onError, setLoading }) => {
+const PerformanceList = ({ onError, onLoadingChange, isLoading }) => {
   const [evaluations, setEvaluations] = useState([]);
   const [filteredEvaluations, setFilteredEvaluations] = useState([]);
   const [filters, setFilters] = useState({
@@ -15,28 +15,30 @@ const PerformanceList = ({ onError, setLoading }) => {
     rating: ''
   });
 
-  useEffect(() => {
-    loadEvaluations();
-  }, []);
-
-  useEffect(() => {
-    applyFilters();
-  }, [filters, evaluations]);
-
-  const loadEvaluations = async () => {
+  const loadEvaluations = useCallback(async () => {
     try {
-      setLoading(true);
+      onLoadingChange(true);
       const response = await performanceService.getAll();
-      setEvaluations(response || []);
-      setFilteredEvaluations(response || []);
+      if (response) {
+        setEvaluations(response);
+        setFilteredEvaluations(response);
+      }
     } catch (error) {
       onError(error);
       setEvaluations([]);
       setFilteredEvaluations([]);
     } finally {
-      setLoading(false);
+      onLoadingChange(false);
     }
-  };
+  }, [onLoadingChange, onError]);
+
+  useEffect(() => {
+    loadEvaluations();
+  }, [loadEvaluations]);
+
+  useEffect(() => {
+    applyFilters();
+  }, [filters, evaluations]);
 
   const handleFilterChange = (e) => {
     setFilters({
@@ -89,6 +91,10 @@ const PerformanceList = ({ onError, setLoading }) => {
       // Adicione aqui sua lógica de tratamento de erro (ex: toast, alert, etc)
     }
   };
+
+  if (isLoading) {
+    return null;
+  }
 
   return (
     <Container className="mt-4">
