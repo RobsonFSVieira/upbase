@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { Box, Typography, Card, Alert, Spinner, Button } from '@mui/material';
+import { Box, Typography, Card, Alert, CircularProgress, Button } from '@mui/material';
 import { Link } from 'react-router-dom';
 import PerformanceList from '../../../components/PerformanceEvaluation/PerformanceList';
 import AvaliacaoPaginada from '../../../features/avaliacoes/components/AvaliacaoPaginada';
@@ -48,9 +48,9 @@ const AvaliacoesDesempenho = () => {
             isLoading={isLoading}
           />
           {isLoading && (
-            <div className="text-center position-absolute top-50 start-50 translate-middle">
-              <Spinner animation="border" />
-            </div>
+            <Box display="flex" justifyContent="center" alignItems="center" p={3}>
+              <CircularProgress />
+            </Box>
           )}
         </Box>
       </Card>

@@ -8,7 +8,9 @@ import {
   TableRow, 
   Paper, 
   Button,
-  Box 
+  Box,
+  CircularProgress,
+  Alert 
 } from '@mui/material';
 import { performanceService } from '../../services/performanceService';
 import { exportService } from '../../services/exportService';
@@ -102,7 +104,11 @@ const PerformanceList = ({ onError, onLoadingChange, isLoading }) => {
   };
 
   if (isLoading) {
-    return null;
+    return (
+      <Box display="flex" justifyContent="center" p={3}>
+        <CircularProgress />
+      </Box>
+    );
   }
 
   return (
