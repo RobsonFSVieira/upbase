@@ -340,28 +340,68 @@ export const performanceService = {
 
   // Mantenha as funções existentes para compatibilidade
   create(data) {
-    const newId = Math.max(...mockData.map(item => item.id)) + 1;
+    const newId = Math.max(...mockAvaliacoes.map(item => item.id)) + 1;
     const newItem = { ...data, id: newId };
-    mockData.push(newItem);
+    mockAvaliacoes.push(newItem);
     return Promise.resolve(newItem);
   },
 
   update(id, data) {
-    const index = mockData.findIndex(item => item.id === parseInt(id));
+    const index = mockAvaliacoes.findIndex(item => item.id === parseInt(id));
     if (index >= 0) {
-      mockData[index] = { ...data, id: parseInt(id) };
-      return Promise.resolve(mockData[index]);
+      mockAvaliacoes[index] = { ...data, id: parseInt(id) };
+      return Promise.resolve(mockAvaliacoes[index]);
     }
     return Promise.resolve(null);
   },
 
   delete(id) {
-    const index = mockData.findIndex(item => item.id === parseInt(id));
+    const index = mockAvaliacoes.findIndex(item => item.id === parseInt(id));
     if (index >= 0) {
-      mockData.splice(index, 1);
+      mockAvaliacoes.splice(index, 1);
       return Promise.resolve(true);
     }
     return Promise.resolve(false);
+  },
+  
+  // Função para criar/atualizar modelo de avaliação
+  salvarModeloAvaliacao(modelo) {
+    if (modelo.id) {
+      // Atualizar modelo existente
+      const index = mockModelosAvaliacao.findIndex(m => m.id === modelo.id);
+      if (index >= 0) {
+        mockModelosAvaliacao[index] = { ...modelo };
+        return Promise.resolve(mockModelosAvaliacao[index]);
+      }
+    } else {
+      // Criar novo modelo
+      const novoModelo = {
+        ...modelo,
+        id: Math.max(...mockModelosAvaliacao.map(m => m.id)) + 1
+      };
+      mockModelosAvaliacao.push(novoModelo);
+      return Promise.resolve(novoModelo);
+    }
+  },
+  
+  // Função para criar/atualizar critério
+  salvarCriterio(criterio) {
+    if (criterio.id) {
+      // Atualizar critério existente
+      const index = mockCriterios.findIndex(c => c.id === criterio.id);
+      if (index >= 0) {
+        mockCriterios[index] = { ...criterio };
+        return Promise.resolve(mockCriterios[index]);
+      }
+    } else {
+      // Criar novo critério
+      const novoCriterio = {
+        ...criterio,
+        id: Math.max(...mockCriterios.map(c => c.id)) + 1
+      };
+      mockCriterios.push(novoCriterio);
+      return Promise.resolve(novoCriterio);
+    }
   }
 };
 
