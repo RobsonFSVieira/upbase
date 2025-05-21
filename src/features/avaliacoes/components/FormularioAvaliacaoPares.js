@@ -8,8 +8,7 @@ import {
   TextField,
   Grid,
   Tabs,
-  Tab,
-  Divider
+  Tab
 } from '@mui/material';
 
 const COLEGAS_TURNO = [

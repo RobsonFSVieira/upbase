@@ -3,7 +3,7 @@ import { Typography, Box, Button, Stack, Card } from '@mui/material';
 import { Add as AddIcon } from '@mui/icons-material';
 
 export default function AvaliacoesExperiencia() {
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [, setDialogOpen] = useState(false); // Remover dialogOpen da desestruturação
 
   return (
     <Stack spacing={3}>

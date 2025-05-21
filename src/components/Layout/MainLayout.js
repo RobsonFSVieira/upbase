@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {
   AppBar,
   Box,
@@ -11,7 +11,6 @@ import {
   ListItemIcon,
   ListItemText,
   Toolbar,
-  Typography,
   useMediaQuery,
   useTheme,
 } from '@mui/material';
@@ -30,7 +29,6 @@ import {
   HealthAndSafety,
   Warning,
   Feedback,
-  Timeline
 } from '@mui/icons-material';
 import { useTheme as useThemeContext } from '../../contexts/ThemeContext';
 import Logo from '../../assets/images/logo-official.png';

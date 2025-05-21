@@ -11,8 +11,7 @@ import {
 import { 
   NavigateNext as NextIcon,
   NavigateBefore as BackIcon,
-  Save as SaveIcon,
-  Check as CheckIcon 
+  Save as SaveIcon
 } from '@mui/icons-material';
 import { useNotification } from '../../../contexts/NotificationContext';
 
