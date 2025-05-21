@@ -46,23 +46,24 @@ export const performanceService = {
       // Usar cache se disponível para evitar chamadas repetidas
       if (cachedData) {
         console.log('Usando dados em cache');
-        return cachedData;
+        return Promise.resolve(cachedData);
       }
 
-      // Em produção, usar a API real
-      if (process.env.NODE_ENV === 'production' && BASE_URL !== 'https://api.example.com') {
-        const response = await axios.get(`${BASE_URL}/performance`);
-        cachedData = response.data;
-        return response.data;
+      // Em desenvolvimento, usar mock data imediatamente sem delay artificial
+      if (process.env.NODE_ENV !== 'production' || BASE_URL === 'https://api.example.com') {
+        console.log('Usando dados mockados para avaliações');
+        cachedData = [...mockData];
+        return Promise.resolve(cachedData);
       }
       
-      // Em desenvolvimento, usar mock data
-      console.log('Usando dados mockados para avaliações');
-      cachedData = mockData;
-      return mockData;
+      // Em produção, usar a API real
+      const response = await axios.get(`${BASE_URL}/performance`);
+      cachedData = response.data;
+      return response.data;
     } catch (error) {
       console.error('Erro ao buscar avaliações:', error);
-      return mockData; // Fallback para mock data
+      // Fallback para mock data sem delay
+      return Promise.resolve([...mockData]); 
     }
   },
 
@@ -73,11 +74,21 @@ export const performanceService = {
 
   async getById(id) {
     try {
-      if (process.env.NODE_ENV === 'production' && BASE_URL !== 'https://api.example.com') {
-        const response = await axios.get(`${BASE_URL}/performance/${id}`);
-        return response.data;
+      // Buscar do cache primeiro se disponível
+      if (cachedData) {
+        const cachedItem = cachedData.find(item => item.id === parseInt(id));
+        if (cachedItem) {
+          return Promise.resolve(cachedItem);
+        }
       }
-      return mockData.find(item => item.id === parseInt(id)) || null;
+
+      if (process.env.NODE_ENV !== 'production' || BASE_URL === 'https://api.example.com') {
+        const item = mockData.find(item => item.id === parseInt(id));
+        return Promise.resolve(item || null);
+      }
+      
+      const response = await axios.get(`${BASE_URL}/performance/${id}`);
+      return response.data;
     } catch (error) {
       console.error(`Erro ao buscar avaliação ${id}:`, error);
       return mockData.find(item => item.id === parseInt(id)) || null;

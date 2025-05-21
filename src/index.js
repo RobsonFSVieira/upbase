@@ -1,21 +1,35 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
+// Importações CSS podem atrasar o carregamento
 import './index.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
+// Carregamento assíncrono de bootstrap para não bloquear a renderização inicial
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+// Carregar bootstrap assíncronamente
+const loadBootstrap = async () => {
+  await import('bootstrap/dist/css/bootstrap.min.css');
+};
+loadBootstrap();
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
+  // Remover StrictMode em produção pode melhorar performance (evita double-rendering)
+  process.env.NODE_ENV === 'development' ? (
+    <React.StrictMode>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </React.StrictMode>
+  ) : (
     <BrowserRouter>
       <App />
     </BrowserRouter>
-  </React.StrictMode>
+  )
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+// Só reportar métricas em produção
+if (process.env.NODE_ENV === 'production') {
+  reportWebVitals();
+}

@@ -15,36 +15,35 @@ import {
 } from '@mui/material';
 import { performanceService } from '../../services/performanceService';
 
-const PerformanceList = ({ onError, onLoadingChange }) => {
+// Memoize o componente para evitar re-renders desnecessários
+const PerformanceList = React.memo(({ onError, onLoadingChange }) => {
   const [evaluations, setEvaluations] = useState([]);
-  const [loaded, setLoaded] = useState(false);
 
-  // Função de carregamento isolada para evitar loops
+  // Load only once at mount
   useEffect(() => {
-    // Evitar recarregamentos
-    if (loaded) return;
-
-    // Flag para garantir que o useEffect não será chamado novamente após desmontagem
     let isMounted = true;
 
     const loadEvaluations = async () => {
       try {
         if (onLoadingChange) onLoadingChange(true);
-        console.log('Carregando avaliações...');
         
-        const data = await performanceService.getAll();
-        console.log('Avaliações carregadas:', data);
+        // Simular um timeout mínimo para evitar flickering da UI
+        const [data] = await Promise.all([
+          performanceService.getAll(),
+          new Promise(resolve => setTimeout(resolve, 300))
+        ]);
         
-        // Verificar se o componente ainda está montado
+        // Verificar se componente ainda está montado
         if (isMounted) {
           setEvaluations(data || []);
-          setLoaded(true);
+          if (onLoadingChange) onLoadingChange(false);
         }
       } catch (error) {
         console.error('Erro ao carregar avaliações:', error);
-        if (isMounted && onError) onError(error);
-      } finally {
-        if (isMounted && onLoadingChange) onLoadingChange(false);
+        if (isMounted) {
+          if (onError) onError(error);
+          if (onLoadingChange) onLoadingChange(false);
+        }
       }
     };
 
@@ -54,7 +53,7 @@ const PerformanceList = ({ onError, onLoadingChange }) => {
     return () => {
       isMounted = false;
     };
-  }, [loaded, onError, onLoadingChange]);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!evaluations || evaluations.length === 0) {
     return (
@@ -105,6 +104,6 @@ const PerformanceList = ({ onError, onLoadingChange }) => {
       </TableContainer>
     </Box>
   );
-};
+});
 
 export default PerformanceList;

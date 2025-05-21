@@ -2,12 +2,13 @@ import React, { useState, useCallback } from 'react';
 import { Box, Typography, Card, Alert, CircularProgress, Button } from '@mui/material';
 import PerformanceList from '../../../components/PerformanceEvaluation/PerformanceList';
 
-const AvaliacoesDesempenho = () => {
-  console.log('Renderizando AvaliacoesDesempenho');
+// Use React.memo para evitar re-renderizações desnecessárias
+const AvaliacoesDesempenho = React.memo(() => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   
+  // Callbacks estáveis para evitar re-renderizações
   const handleError = useCallback((error) => {
     console.error('Erro na avaliação de desempenho:', error);
     setError('Ocorreu um erro ao carregar os dados. Por favor, tente novamente.');
@@ -15,12 +16,29 @@ const AvaliacoesDesempenho = () => {
   }, []);
 
   const handleLoadingChange = useCallback((loading) => {
-    console.log('Loading state changed to:', loading);
     setIsLoading(loading);
   }, []);
 
-  // Identificador único para o PerformanceList para evitar re-renderizações desnecessárias
-  const performanceListKey = 'performance-list-component';
+  // Use React.useMemo para componentes caros de renderizar
+  const renderContent = React.useMemo(() => {
+    if (isLoading) {
+      return (
+        <Box display="flex" justifyContent="center" alignItems="center" p={3}>
+          <CircularProgress size={24} />
+          <Typography variant="body2" sx={{ ml: 2 }}>
+            Carregando avaliações...
+          </Typography>
+        </Box>
+      );
+    }
+    
+    return (
+      <PerformanceList 
+        onError={handleError} 
+        onLoadingChange={handleLoadingChange}
+      />
+    );
+  }, [isLoading, handleError, handleLoadingChange]);
 
   return (
     <Box>
@@ -45,24 +63,11 @@ const AvaliacoesDesempenho = () => {
       
       <Card>
         <Box p={3}>
-          {isLoading ? (
-            <Box display="flex" justifyContent="center" alignItems="center" p={3}>
-              <CircularProgress />
-              <Typography variant="body2" sx={{ ml: 2 }}>
-                Carregando avaliações...
-              </Typography>
-            </Box>
-          ) : (
-            <PerformanceList 
-              key={performanceListKey}
-              onError={handleError} 
-              onLoadingChange={handleLoadingChange}
-            />
-          )}
+          {renderContent}
         </Box>
       </Card>
     </Box>
   );
-};
+});
 
 export default AvaliacoesDesempenho;
