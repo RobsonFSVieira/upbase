@@ -2,16 +2,15 @@ import React, { useState, useCallback } from 'react';
 import { Box, Typography, Card, Alert, CircularProgress, Button } from '@mui/material';
 import PerformanceList from '../../../components/PerformanceEvaluation/PerformanceList';
 
-// Use React.memo para evitar re-renderizações desnecessárias
-const AvaliacoesDesempenho = React.memo(() => {
+const AvaliacoesDesempenho = () => {
+  console.log('Renderizando página de avaliações de desempenho');
   const [dialogOpen, setDialogOpen] = useState(false);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  
-  // Callbacks estáveis para evitar re-renderizações
+
   const handleError = useCallback((error) => {
     console.error('Erro na avaliação de desempenho:', error);
-    setError('Ocorreu um erro ao carregar os dados. Por favor, tente novamente.');
+    setError('Ocorreu um erro ao carregar os dados: ' + (error.message || 'Erro desconhecido'));
     setIsLoading(false);
   }, []);
 
@@ -19,31 +18,25 @@ const AvaliacoesDesempenho = React.memo(() => {
     setIsLoading(loading);
   }, []);
 
-  // Use React.useMemo para componentes caros de renderizar
-  const renderContent = React.useMemo(() => {
-    if (isLoading) {
-      return (
-        <Box display="flex" justifyContent="center" alignItems="center" p={3}>
-          <CircularProgress size={24} />
-          <Typography variant="body2" sx={{ ml: 2 }}>
-            Carregando avaliações...
-          </Typography>
-        </Box>
-      );
-    }
-    
-    return (
-      <PerformanceList 
-        onError={handleError} 
-        onLoadingChange={handleLoadingChange}
-      />
-    );
-  }, [isLoading, handleError, handleLoadingChange]);
+  const handleRetry = () => {
+    setError(null);
+    setIsLoading(true);
+    // Forçar recarregamento da página para limpar o estado
+    window.location.reload();
+  };
 
   return (
     <Box>
       {error && (
-        <Alert severity="error" onClose={() => setError(null)}>
+        <Alert 
+          severity="error" 
+          onClose={() => setError(null)}
+          action={
+            <Button color="inherit" size="small" onClick={handleRetry}>
+              TENTAR NOVAMENTE
+            </Button>
+          }
+        >
           {error}
         </Alert>
       )}
@@ -63,11 +56,23 @@ const AvaliacoesDesempenho = React.memo(() => {
       
       <Card>
         <Box p={3}>
-          {renderContent}
+          {isLoading ? (
+            <Box display="flex" justifyContent="center" alignItems="center" p={3}>
+              <CircularProgress />
+              <Typography variant="body2" sx={{ ml: 2 }}>
+                Carregando avaliações...
+              </Typography>
+            </Box>
+          ) : (
+            <PerformanceList 
+              onError={handleError} 
+              onLoadingChange={handleLoadingChange}
+            />
+          )}
         </Box>
       </Card>
     </Box>
   );
-});
+};
 
 export default AvaliacoesDesempenho;

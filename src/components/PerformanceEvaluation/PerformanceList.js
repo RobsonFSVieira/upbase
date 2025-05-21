@@ -15,33 +15,38 @@ import {
 } from '@mui/material';
 import { performanceService } from '../../services/performanceService';
 
-// Memoize o componente para evitar re-renders desnecessários
-const PerformanceList = React.memo(({ onError, onLoadingChange }) => {
+const PerformanceList = ({ onError, onLoadingChange }) => {
   const [evaluations, setEvaluations] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Load only once at mount
   useEffect(() => {
     let isMounted = true;
 
     const loadEvaluations = async () => {
       try {
+        // Garantir que notificamos o componente pai sobre o estado de loading
         if (onLoadingChange) onLoadingChange(true);
+        setLoading(true);
         
-        // Simular um timeout mínimo para evitar flickering da UI
-        const [data] = await Promise.all([
-          performanceService.getAll(),
-          new Promise(resolve => setTimeout(resolve, 300))
-        ]);
+        // Lidar com possíveis erros
+        const data = await performanceService.getAll();
         
-        // Verificar se componente ainda está montado
+        // Verificar se o componente ainda está montado
         if (isMounted) {
-          setEvaluations(data || []);
-          if (onLoadingChange) onLoadingChange(false);
+          console.log('Dados carregados com sucesso:', data);
+          setEvaluations(Array.isArray(data) ? data : []);
+          setError(null);
         }
       } catch (error) {
         console.error('Erro ao carregar avaliações:', error);
         if (isMounted) {
+          setError(error.message || 'Erro ao carregar avaliações');
           if (onError) onError(error);
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
           if (onLoadingChange) onLoadingChange(false);
         }
       }
@@ -49,13 +54,30 @@ const PerformanceList = React.memo(({ onError, onLoadingChange }) => {
 
     loadEvaluations();
 
-    // Cleanup function
     return () => {
       isMounted = false;
     };
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [onError, onLoadingChange]);
 
-  if (!evaluations || evaluations.length === 0) {
+  // Mostrar mensagem de erro em caso de falha
+  if (error) {
+    return (
+      <Alert severity="error">
+        {error}
+        <Button 
+          onClick={() => window.location.reload()} 
+          sx={{ ml: 2 }}
+          variant="outlined"
+          size="small"
+        >
+          Tentar novamente
+        </Button>
+      </Alert>
+    );
+  }
+
+  // Mostrar mensagem se não houver avaliações
+  if (!loading && (!evaluations || evaluations.length === 0)) {
     return (
       <Alert severity="info">
         Nenhuma avaliação encontrada. Clique em "Nova Avaliação" para adicionar.
@@ -104,6 +126,6 @@ const PerformanceList = React.memo(({ onError, onLoadingChange }) => {
       </TableContainer>
     </Box>
   );
-});
+};
 
 export default PerformanceList;

@@ -43,27 +43,34 @@ let cachedData = null;
 export const performanceService = {
   async getAll() {
     try {
-      // Usar cache se disponível para evitar chamadas repetidas
+      // Garantir que sempre teremos dados, mesmo em caso de falha
       if (cachedData) {
         console.log('Usando dados em cache');
-        return Promise.resolve(cachedData);
+        return cachedData;
       }
 
-      // Em desenvolvimento, usar mock data imediatamente sem delay artificial
-      if (process.env.NODE_ENV !== 'production' || BASE_URL === 'https://api.example.com') {
-        console.log('Usando dados mockados para avaliações');
-        cachedData = [...mockData];
-        return Promise.resolve(cachedData);
+      // Simplificando a lógica para evitar falhas em produção
+      if (process.env.NODE_ENV === 'production') {
+        try {
+          const response = await axios.get(`${BASE_URL}/performance`);
+          if (response && response.data) {
+            cachedData = response.data;
+            return response.data;
+          }
+        } catch (apiError) {
+          console.error('Erro na API em produção:', apiError);
+          // Usar mock data em caso de erro na produção também
+        }
       }
       
-      // Em produção, usar a API real
-      const response = await axios.get(`${BASE_URL}/performance`);
-      cachedData = response.data;
-      return response.data;
+      // Usar mock data em desenvolvimento e como fallback em produção
+      console.log('Usando dados mockados para avaliações');
+      cachedData = [...mockData];
+      return cachedData;
     } catch (error) {
       console.error('Erro ao buscar avaliações:', error);
-      // Fallback para mock data sem delay
-      return Promise.resolve([...mockData]); 
+      // Garantir que sempre retornamos dados, mesmo em caso de erro
+      return mockData; 
     }
   },
 
