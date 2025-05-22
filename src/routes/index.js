@@ -4,13 +4,12 @@ import {
   Box,
   Typography,
   Alert,
-  CircularProgress,
-  Paper
+  CircularProgress
 } from '@mui/material';
 import MSFormsStyleEvaluation from '../../../../components/PerformanceEvaluation/MSFormsStyleEvaluation';
 import { performanceService } from '../../../../services/performanceService';
 
-const AvaliacaoFormulario = () => {
+const AvaliarDesempenho = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
@@ -106,7 +105,7 @@ const AvaliacaoFormulario = () => {
   );
 };
 
-export default AvaliacaoFormulario;
+export default AvaliarDesempenho;
 
 //# sourceMappingURL=index.js.map
 
@@ -114,10 +113,10 @@ import Home from '../pages/Home';
 import Avaliacoes from '../pages/avaliacoes';
 import AvaliacoesDesempenho from '../pages/avaliacoes/desempenho';
 import AvaliacoesExperiencia from '../pages/avaliacoes/experiencia';
-import AvaliacaoFormulario from '../pages/avaliacoes/desempenho/avaliar';
 import PerformanceForm from '../components/PerformanceEvaluation/PerformanceForm';
 import PerformanceDetail from '../components/PerformanceEvaluation/PerformanceDetail';
 import { Navigate } from 'react-router-dom';
+import AvaliarDesempenho from '../pages/avaliacoes/desempenho/avaliar';
 
 export const routes = [
   {
@@ -138,7 +137,7 @@ export const routes = [
   },
   {
     path: '/avaliacoes/desempenho/avaliar/:id',
-    element: AvaliacaoFormulario
+    element: AvaliarDesempenho
   },
   {
     path: '/performance/new',

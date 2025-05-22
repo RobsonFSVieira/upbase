@@ -10,7 +10,7 @@ import {
 import MSFormsStyleEvaluation from '../../../../components/PerformanceEvaluation/MSFormsStyleEvaluation';
 import { performanceService } from '../../../../services/performanceService';
 
-const AvaliacaoFormulario = () => {
+const AvaliarDesempenho = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
@@ -106,6 +106,6 @@ const AvaliacaoFormulario = () => {
   );
 };
 
-export default AvaliacaoFormulario;
+export default AvaliarDesempenho;
 
 //# sourceMappingURL=index.js.map
