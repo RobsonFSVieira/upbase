@@ -402,7 +402,23 @@ export const performanceService = {
       mockCriterios.push(novoCriterio);
       return Promise.resolve(novoCriterio);
     }
-  }
+  },
+
+  // Obter todas as avaliações (compatível com implementação anterior)
+  getAll() {
+    console.log('Fornecendo dados mockados para avaliações');
+    // Formatar para compatibilidade com o código existente
+    return Promise.resolve([...mockAvaliacoes].map(av => ({
+      id: av.id,
+      employeeName: av.nome_colaborador,
+      department: av.departamento,
+      period: av.periodo,
+      goals: av.comentarios_gerais_autoavaliacao,
+      skills: av.comentarios_gerais_lider,
+      rating: av.nota_final_calculada ? String(Math.round(av.nota_final_calculada)) : "N/A",
+      comments: av.comentarios_gerais_lider
+    })));
+  },
 };
 
 export default performanceService;

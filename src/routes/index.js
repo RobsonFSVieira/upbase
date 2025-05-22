@@ -25,7 +25,7 @@ export const routes = [
     element: AvaliacoesExperiencia
   },
   {
-    path: '/avaliacoes/desempenho/avaliar/:id',
+    path: '/avaliacoes/realizar/:id',
     element: AvaliarDesempenho
   },
   {

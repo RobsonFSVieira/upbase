@@ -4,9 +4,10 @@ import {
   Box,
   Typography,
   Alert,
-  CircularProgress
+  CircularProgress,
+  Paper,
 } from '@mui/material';
-import MSFormsStyleEvaluation from '../../../../components/PerformanceEvaluation/MSFormsStyleEvaluation';
+import MSStyleForm from '../../../../components/PerformanceEvaluation/MSStyleForm';
 import { performanceService } from '../../../../services/performanceService';
 
 const AvaliarDesempenho = () => {
@@ -28,13 +29,15 @@ const AvaliarDesempenho = () => {
 
   useEffect(() => {
     const carregarAvaliacao = async () => {
-      if (!id) return;
+      if (!id || id === 'new') {
+        setLoading(false);
+        return;
+      }
       
       try {
         setLoading(true);
         setError(null);
         
-        // Em um cenário real, você buscaria a avaliação por ID
         const avaliacao = await performanceService.getById(id);
         if (!avaliacao) {
           setError('Avaliação não encontrada');
@@ -91,17 +94,29 @@ const AvaliarDesempenho = () => {
   const isLider = userProfile.role === 'lider';
 
   return (
-    <Box>
-      <Typography variant="h5" fontWeight="bold" gutterBottom>
-        {isLider ? 'Avaliação de Desempenho - Líder' : 'Autoavaliação de Desempenho'}
+    <Paper sx={{ p: 3 }}>
+      <Typography variant="h5" fontWeight="bold" gutterBottom color="primary">
+        {isLider 
+          ? (id === 'new' ? 'Nova Avaliação de Desempenho' : 'Avaliação de Desempenho - Líder')
+          : (id === 'new' ? 'Nova Autoavaliação' : 'Autoavaliação de Desempenho')
+        }
       </Typography>
 
-      <MSFormsStyleEvaluation 
-        avaliacaoId={id}
-        isLider={isLider}
-        onComplete={handleComplete}
-      />
-    </Box>
+      {loading ? (
+        <Box display="flex" justifyContent="center" p={4}>
+          <CircularProgress />
+        </Box>
+      ) : error ? (
+        <Alert severity="error">{error}</Alert>
+      ) : (
+        <MSStyleForm
+          avaliacaoId={id === 'new' ? null : id}
+          isLider={isLider}
+          onComplete={handleComplete}
+          isNew={id === 'new'}
+        />
+      )}
+    </Paper>
   );
 };
 

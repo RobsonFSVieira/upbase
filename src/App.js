@@ -4,6 +4,8 @@ import { ThemeProvider as MUIThemeProvider } from '@mui/material/styles';
 import { Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { NotificationProvider } from './contexts/NotificationContext';
+import { UserProvider } from './contexts/UserContext';
+import { HelpProvider } from './contexts/HelpContext';
 import { MainLayout } from './components/Layout';
 import { routes } from './routes';
 import getTheme from './utils/theme';
@@ -30,21 +32,25 @@ function App() {
   return (
     <ThemeProvider>
       <NotificationProvider>
-        <ThemedLayout>
-          <Routes>
-            {routes.map(({ path, element: Element }) => (
-              <Route
-                key={path}
-                path={path}
-                element={
-                  typeof Element === 'function'
-                    ? <Element />
-                    : Element
-                }
-              />
-            ))}
-          </Routes>
-        </ThemedLayout>
+        <UserProvider>
+          <HelpProvider>
+            <ThemedLayout>
+              <Routes>
+                {routes.map(({ path, element: Element }) => (
+                  <Route
+                    key={path}
+                    path={path}
+                    element={
+                      typeof Element === 'function'
+                        ? <Element />
+                        : Element
+                    }
+                  />
+                ))}
+              </Routes>
+            </ThemedLayout>
+          </HelpProvider>
+        </UserProvider>
       </NotificationProvider>
     </ThemeProvider>
   );
