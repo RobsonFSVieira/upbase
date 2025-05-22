@@ -32,24 +32,25 @@ import {
 } from '@mui/icons-material';
 import { useTheme as useThemeContext } from '../../contexts/ThemeContext';
 import Logo from '../../assets/images/logo-official.png';
+import UserMenu from '../common/UserMenu';
 
 const DRAWER_WIDTH = 240;
 
 const menuItems = [
   { text: 'Dashboard', icon: <Dashboard />, path: '/' },
-  { 
-    text: 'Avaliações', 
+  {
+    text: 'Avaliações',
     icon: <Assessment />,
     subItems: [
       { text: 'Desempenho', path: '/avaliacoes/desempenho' },
-      { text: 'Experiência', path: '/avaliacoes/experiencia' }
-    ]
+      { text: 'Experiência', path: '/avaliacoes/experiencia' },
+    ],
   },
   { text: 'Colaboradores', icon: <Group />, path: '/colaboradores' },
   { text: 'Escalas', icon: <Event />, path: '/escalas' },
   { text: 'Atestados', icon: <HealthAndSafety />, path: '/atestados' },
   { text: 'Apontamentos', icon: <Warning />, path: '/apontamentos' },
-  { text: 'Feedbacks', icon: <Feedback />, path: '/feedbacks' }
+  { text: 'Feedbacks', icon: <Feedback />, path: '/feedbacks' },
 ];
 
 function MainLayout({ children }) {
@@ -72,6 +73,10 @@ function MainLayout({ children }) {
       navigate(item.path);
       if (isMobile) handleDrawerToggle();
     }
+  };
+
+  const handleLogoClick = () => {
+    navigate('/');
   };
 
   const drawer = (
@@ -180,12 +185,18 @@ function MainLayout({ children }) {
               <MenuIcon sx={{ fontSize: 24 }} />
             </IconButton>
             {!logoError && (
-              <img
+              <Box
+                component="img"
                 src={Logo}
                 alt="UPBase Logo"
-                style={{
-                  height: theme.breakpoints.values.sm ? '50px' : '65px',
+                onClick={handleLogoClick}
+                sx={{
+                  height: { xs: '55px', sm: '75px' },
                   transition: 'transform 0.2s',
+                  cursor: 'pointer',
+                  '&:hover': {
+                    transform: 'scale(1.05)',
+                  }
                 }}
                 onError={(e) => {
                   console.error('Erro ao carregar logo:', e);
@@ -215,19 +226,7 @@ function MainLayout({ children }) {
             >
               <NotificationsOutlined sx={{ fontSize: 22 }} />
             </IconButton>
-            <IconButton
-              sx={{
-                color: theme.palette.mode === 'light' ? '#0F2747' : '#FFFFFF',
-                '&:hover': {
-                  backgroundColor:
-                    theme.palette.mode === 'light'
-                      ? 'rgba(15, 39, 71, 0.08)'
-                      : 'rgba(255, 255, 255, 0.08)',
-                },
-              }}
-            >
-              <AccountCircleOutlined sx={{ fontSize: 22 }} />
-            </IconButton>
+            <UserMenu />
             <IconButton
               onClick={toggleTheme}
               sx={{

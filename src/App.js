@@ -6,6 +6,7 @@ import { ThemeProvider } from './contexts/ThemeContext';
 import { NotificationProvider } from './contexts/NotificationContext';
 import { UserProvider } from './contexts/UserContext';
 import { HelpProvider } from './contexts/HelpContext';
+import { AuthProvider } from './contexts/AuthContext';
 import { MainLayout } from './components/Layout';
 import { routes } from './routes';
 import getTheme from './utils/theme';
@@ -31,27 +32,29 @@ function ThemedLayout({ children }) {
 function App() {
   return (
     <ThemeProvider>
-      <NotificationProvider>
-        <UserProvider>
-          <HelpProvider>
-            <ThemedLayout>
-              <Routes>
-                {routes.map(({ path, element: Element }) => (
-                  <Route
-                    key={path}
-                    path={path}
-                    element={
-                      typeof Element === 'function'
-                        ? <Element />
-                        : Element
-                    }
-                  />
-                ))}
-              </Routes>
-            </ThemedLayout>
-          </HelpProvider>
-        </UserProvider>
-      </NotificationProvider>
+      <AuthProvider>
+        <NotificationProvider>
+          <UserProvider>
+            <HelpProvider>
+              <ThemedLayout>
+                <Routes>
+                  {routes.map(({ path, element: Element }) => (
+                    <Route
+                      key={path}
+                      path={path}
+                      element={
+                        typeof Element === 'function'
+                          ? <Element />
+                          : Element
+                      }
+                    />
+                  ))}
+                </Routes>
+              </ThemedLayout>
+            </HelpProvider>
+          </UserProvider>
+        </NotificationProvider>
+      </AuthProvider>
     </ThemeProvider>
   );
 }

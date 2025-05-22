@@ -6,6 +6,8 @@ import PerformanceForm from '../components/PerformanceEvaluation/PerformanceForm
 import PerformanceDetail from '../components/PerformanceEvaluation/PerformanceDetail';
 import AvaliarDesempenho from '../pages/avaliacoes/desempenho/avaliar';
 import { Navigate } from 'react-router-dom';
+import Profile from '../pages/Profile';
+import Settings from '../pages/Settings';
 
 export const routes = [
   {
@@ -39,6 +41,14 @@ export const routes = [
   {
     path: '/performance/:id',
     element: PerformanceDetail
+  },
+  {
+    path: '/profile',
+    element: Profile
+  },
+  {
+    path: '/settings',
+    element: Settings
   },
   {
     path: '*',
