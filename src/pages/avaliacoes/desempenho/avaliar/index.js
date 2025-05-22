@@ -4,8 +4,7 @@ import {
   Box,
   Typography,
   Alert,
-  CircularProgress,
-  Paper
+  CircularProgress
 } from '@mui/material';
 import MSFormsStyleEvaluation from '../../../../components/PerformanceEvaluation/MSFormsStyleEvaluation';
 import { performanceService } from '../../../../services/performanceService';

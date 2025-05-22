@@ -1,0 +1,30 @@
+Executar localmente com npm start:
+# No diretório d:\VSCODE\UPBase\upbase
+npm start
+
+Isso iniciará o servidor de desenvolvimento em http://localhost:3000 e você terá:
+
+Hot reload (atualizações automáticas quando salva alterações)
+Feedback imediato de erros
+Console do navegador para debugging
+Tempo de compilação muito mais rápido que o deploy
+
+Executar build local com npm run build:
+# No diretório d:\VSCODE\UPBase\upbase
+npm run build
+
+Isso irá:
+
+Criar uma build de produção localmente
+Mostrar exatamente os mesmos erros que apareceriam no deploy
+Permitir testar se tudo está compilando corretamente antes de fazer push
+
+Para testar a build local após compilar:
+npx serve -s build
+
+Recomendo sempre:
+
+Desenvolver usando npm start para feedback rápido
+Antes de fazer push, rodar npm run build para garantir que não há erros de compilação
+Só depois fazer o push para o deploy
+
