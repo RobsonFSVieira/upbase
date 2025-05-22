@@ -114,12 +114,10 @@ import Home from '../pages/Home';
 import Avaliacoes from '../pages/avaliacoes';
 import AvaliacoesDesempenho from '../pages/avaliacoes/desempenho';
 import AvaliacoesExperiencia from '../pages/avaliacoes/experiencia';
+import AvaliacaoFormulario from '../pages/avaliacoes/desempenho/avaliar';
 import PerformanceForm from '../components/PerformanceEvaluation/PerformanceForm';
 import PerformanceDetail from '../components/PerformanceEvaluation/PerformanceDetail';
 import { Navigate } from 'react-router-dom';
-
-// Importar o componente de outro arquivo
-import AvaliacaoFormulario from '../pages/avaliacoes/desempenho/avaliar';
 
 export const routes = [
   {
