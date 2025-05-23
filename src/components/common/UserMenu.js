@@ -34,6 +34,12 @@ const UserMenu = () => {
     handleClose();
   };
 
+  const handleLogout = () => {
+    // Aqui você pode limpar o localStorage, context, etc.
+    localStorage.removeItem('upbase_user');
+    navigate('/login');
+  };
+
   return (
     <>
       <IconButton
@@ -74,7 +80,7 @@ const UserMenu = () => {
 
         <Divider />
 
-        <MenuItem onClick={() => handleNavigation('/logout')}>
+        <MenuItem onClick={handleLogout}>
           <ListItemIcon>
             <ExitToApp fontSize="small" />
           </ListItemIcon>

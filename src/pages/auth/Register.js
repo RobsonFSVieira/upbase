@@ -1,212 +1,155 @@
 import React, { useState } from 'react';
+import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import {
   Box,
   Paper,
   TextField,
   Button,
   Typography,
+  Alert,
+  Link as MuiLink,
   FormControl,
   InputLabel,
   Select,
   MenuItem,
-  Alert,
-  CircularProgress
 } from '@mui/material';
-import { supabase } from '../../services/supabase';
-
-const TURNOS = ['A', 'B', 'C', 'D', 'ADM', 'Aprendiz'];
+import Logo from '../../assets/images/logo-official.png';
+import { register } from '../../services/authService'; // Importe o serviço de registro
 
 const Register = () => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    email: '',
+    name: '',
+    emailPrefix: '', // Alterado de email para emailPrefix
     password: '',
-    nomeCompleto: '',
-    re: '',
-    funcao: '',
+    confirmPassword: '',
     turno: '',
-    dataNascimento: '',
-    dataAdmissao: '',
+    matricula: ''
   });
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setError(null);
-
+    
     try {
-      // 1. Criar usuário no Auth
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email: formData.email,
-        password: formData.password,
-      });
-
-      if (authError) throw authError;
-
-      // 2. Criar perfil do usuário
-      const { error: profileError } = await supabase
-        .from('user_profiles')
-        .insert({
-          id: authData.user.id,
-          nome_completo: formData.nomeCompleto,
-          re: formData.re,
-          funcao: formData.funcao,
-          turno: formData.turno,
-          data_nascimento: formData.dataNascimento,
-          data_admissao: formData.dataAdmissao,
-          tipo: 'colaborador',
-          status: 'pendente' // Aguardando aprovação do admin
-        });
-
-      if (profileError) throw profileError;
-
-      // 3. Notificar administradores
-      await supabase.from('notifications')
-        .insert({
-          type: 'new_user',
-          title: 'Novo usuário registrado',
-          message: `${formData.nomeCompleto} (${formData.email}) aguarda aprovação`,
-          user_type: 'admin'
-        });
-
+      await register(formData);
+      // Redireciona para página de confirmação
+      navigate('/register/pending');
     } catch (error) {
       setError(error.message);
-    } finally {
-      setLoading(false);
     }
   };
 
-  const validateEmail = (email) => {
-    return email.toLowerCase().endsWith('@grupocesari.com.br');
-  };
-
   return (
-    <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
-      <Paper elevation={3} sx={{ p: 4, width: '100%', maxWidth: 500 }}>
-        <Typography variant="h5" align="center" gutterBottom>
-          Cadastro de Usuário
-        </Typography>
+    <Box sx={{ minHeight: '100vh', display: 'flex', alignItems: 'flex-start', justifyContent: 'center', bgcolor: 'background.default', pt: { xs: 4, sm: 8 } }}>
+      <Paper elevation={3} sx={{ p: 4, width: '100%', maxWidth: 400, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <img src={Logo} alt="Upbase Logo" style={{ height: 80, marginBottom: 24 }} />
+        
+        <Typography variant="h5" gutterBottom>Cadastro</Typography>
 
         {error && (
-          <Alert severity="error" sx={{ mb: 2 }}>
+          <Alert severity="error" sx={{ mb: 2, width: '100%' }}>
             {error}
           </Alert>
         )}
 
-        <form onSubmit={handleSubmit}>
+        <Box component="form" onSubmit={handleSubmit} sx={{ width: '100%' }}>
           <TextField
             fullWidth
-            required
-            label="E-mail Corporativo"
-            name="email"
-            type="email"
-            value={formData.email}
-            onChange={handleChange}
-            error={formData.email && !validateEmail(formData.email)}
-            helperText={formData.email && !validateEmail(formData.email) ? 
-              "Use seu email @grupocesari.com.br" : ""}
-            sx={{ mb: 2 }}
-          />
-
-          <TextField
-            fullWidth
-            required
-            label="Senha"
-            name="password"
-            type="password"
-            value={formData.password}
-            onChange={handleChange}
-            sx={{ mb: 2 }}
-          />
-
-          <TextField
-            fullWidth
-            required
             label="Nome Completo"
-            name="nomeCompleto"
-            value={formData.nomeCompleto}
-            onChange={handleChange}
-            sx={{ mb: 2 }}
+            margin="normal"
+            value={formData.name}
+            onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
           />
 
           <TextField
             fullWidth
-            required
-            label="RE"
-            name="re"
-            value={formData.re}
-            onChange={handleChange}
-            sx={{ mb: 2 }}
+            label="Matrícula"
+            margin="normal"
+            value={formData.matricula}
+            onChange={(e) => setFormData(prev => ({ ...prev, matricula: e.target.value }))}
           />
 
-          <TextField
-            fullWidth
-            label="Função"
-            name="funcao"
-            value={formData.funcao}
-            onChange={handleChange}
-            sx={{ mb: 2 }}
-          />
-
-          <FormControl fullWidth sx={{ mb: 2 }}>
-            <InputLabel>Turno *</InputLabel>
+          <FormControl fullWidth margin="normal">
+            <InputLabel>Turno</InputLabel>
             <Select
-              required
-              name="turno"
               value={formData.turno}
-              onChange={handleChange}
-              label="Turno *"
+              label="Turno"
+              onChange={(e) => setFormData(prev => ({ ...prev, turno: e.target.value }))}
             >
-              {TURNOS.map(turno => (
-                <MenuItem key={turno} value={turno}>
-                  {turno}
-                </MenuItem>
-              ))}
+              <MenuItem value="A">Turno A</MenuItem>
+              <MenuItem value="B">Turno B</MenuItem>
+              <MenuItem value="C">Turno C</MenuItem>
+              <MenuItem value="D">Turno D</MenuItem>
+              <MenuItem value="ADM">Administrativo</MenuItem>
             </Select>
           </FormControl>
 
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+            <TextField
+              sx={{ flexGrow: 1 }}
+              label="E-mail"
+              value={formData.emailPrefix}
+              onChange={(e) => setFormData(prev => ({
+                ...prev,
+                emailPrefix: e.target.value.toLowerCase()
+              }))}
+              placeholder="joao.silva"
+            />
+            <Typography
+              sx={{
+                ml: 1,
+                color: 'text.secondary',
+                whiteSpace: 'nowrap'
+              }}
+            >
+              @grupocesari.com.br
+            </Typography>
+          </Box>
+
           <TextField
             fullWidth
-            required
-            label="Data de Nascimento"
-            name="dataNascimento"
-            type="date"
-            value={formData.dataNascimento}
-            onChange={handleChange}
-            InputLabelProps={{ shrink: true }}
-            sx={{ mb: 2 }}
+            label="Senha"
+            type="password"
+            margin="normal"
+            value={formData.password}
+            onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
           />
 
           <TextField
             fullWidth
-            label="Data de Admissão"
-            name="dataAdmissao"
-            type="date"
-            value={formData.dataAdmissao}
-            onChange={handleChange}
-            InputLabelProps={{ shrink: true }}
-            sx={{ mb: 2 }}
+            label="Confirmar Senha"
+            type="password"
+            margin="normal"
+            value={formData.confirmPassword}
+            onChange={(e) => setFormData(prev => ({ ...prev, confirmPassword: e.target.value }))}
           />
 
           <Button
             fullWidth
             type="submit"
             variant="contained"
-            disabled={loading}
-            sx={{ mt: 2 }}
+            sx={{ mt: 3 }}
           >
-            {loading ? <CircularProgress size={24} /> : 'Cadastrar'}
+            Cadastrar
           </Button>
-        </form>
+
+          <Box sx={{ mt: 2, textAlign: 'center' }}>
+            <MuiLink
+              component={RouterLink}
+              to="/login"
+              variant="body2"
+              sx={{
+                textDecoration: 'none',
+                '&:hover': {
+                  textDecoration: 'underline'
+                }
+              }}
+            >
+              Já tem uma conta? Faça login
+            </MuiLink>
+          </Box>
+        </Box>
       </Paper>
     </Box>
   );

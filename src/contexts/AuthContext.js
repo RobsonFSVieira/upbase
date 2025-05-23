@@ -1,23 +1,91 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
-const AuthContext = createContext();
+// Dados mockados para teste
+const mockUsers = [
+  {
+    id: '1',
+    email: 'admin@lider.com',
+    name: 'Admin',
+    role: 'lider',
+    turno: 'A'
+  },
+  {
+    id: '2',
+    email: 'joao@colaborador.com',
+    name: 'João Silva',
+    role: 'colaborador',
+    turno: 'A'
+  },
+  // Adicione mais usuários conforme necessário
+];
+
+export const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState({
-    id: 'user123',
-    name: 'Usuário Teste',
-    role: 'lider',
-    email: 'teste@exemplo.com'
-  });
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [pendingApproval, setPendingApproval] = useState(false);
 
-  const logout = async () => {
-    // Implementar lógica de logout
+  useEffect(() => {
+    // Verifica se há usuário salvo no localStorage
+    const savedUser = localStorage.getItem('upbase_user');
+    if (savedUser) {
+      setUser(JSON.parse(savedUser));
+    }
+    setLoading(false);
+  }, []);
+
+  const register = async (userData) => {
+    // Simula registro de usuário
+    const newUser = {
+      ...userData,
+      status: 'pending', // pending, approved, rejected
+      createdAt: new Date()
+    };
+    
+    // Em produção, enviaria para a API
+    localStorage.setItem('pending_user', JSON.stringify(newUser));
+    setPendingApproval(true);
+    
+    return newUser;
+  };
+
+  const login = async (email, password, isLeader = false) => {
+    // Para teste, aceita qualquer senha
+    const mockUser = mockUsers.find(u => u.email === email) || {
+      id: Date.now().toString(),
+      email,
+      name: email.split('@')[0],
+      role: isLeader ? 'lider' : 'colaborador',
+      turno: 'A'
+    };
+
+    // Verifica se o usuário está aprovado
+    if (mockUser.status !== 'approved') {
+      throw new Error('Conta aguardando aprovação do administrador');
+    }
+    
+    setUser(mockUser);
+    localStorage.setItem('upbase_user', JSON.stringify(mockUser));
+  };
+
+  const logout = () => {
     setUser(null);
+    localStorage.removeItem('upbase_user');
+  };
+
+  const value = {
+    user,
+    login,
+    logout,
+    loading,
+    pendingApproval,
+    register
   };
 
   return (
-    <AuthContext.Provider value={{ user, setUser, logout }}>
-      {children}
+    <AuthContext.Provider value={value}>
+      {!loading && children}
     </AuthContext.Provider>
   );
 };
@@ -25,7 +93,7 @@ export const AuthProvider = ({ children }) => {
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth deve ser usado dentro de um AuthProvider');
+    throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
 };

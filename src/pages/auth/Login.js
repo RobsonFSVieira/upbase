@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Paper,
@@ -6,85 +7,137 @@ import {
   Button,
   Typography,
   Alert,
-  Link
 } from '@mui/material';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext';
+import { Link as RouterLink } from 'react-router-dom';
+import { Link as MuiLink } from '@mui/material';
+import Logo from '../../assets/images/logo-official.png';
 
 const Login = () => {
   const navigate = useNavigate();
-  const { signIn } = useAuth();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [credentials, setCredentials] = useState({ 
+    emailPrefix: '', // Mudamos de email para emailPrefix
+    password: '' 
+  });
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setError('');
-    setLoading(true);
+    
+    if (credentials.emailPrefix && credentials.password) {
+      const email = `${credentials.emailPrefix}@grupocesari.com.br`;
+      const isLider = email.endsWith('lider.grupocesari.com.br');
+      const mockUser = {
+        id: 1,
+        email,
+        name: credentials.emailPrefix,
+        role: isLider ? 'lider' : 'colaborador'
+      };
 
-    try {
-      await signIn(email, password);
-      navigate('/dashboard');
-    } catch (error) {
-      setError('Falha no login. Verifique suas credenciais.');
-    } finally {
-      setLoading(false);
+      localStorage.setItem('upbase_user', JSON.stringify(mockUser));
+      navigate('/');
+    } else {
+      setError('Por favor, preencha todos os campos');
     }
   };
 
   return (
-    <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
-      <Paper elevation={3} sx={{ p: 4, width: '100%', maxWidth: 400 }}>
-        <Typography variant="h5" align="center" gutterBottom>
+    <Box
+      sx={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'flex-start', // Alterado de 'center' para 'flex-start'
+        justifyContent: 'center',
+        bgcolor: 'background.default',
+        pt: { xs: 4, sm: 8 } // Adiciona padding-top para mover para cima
+      }}
+    >
+      <Paper
+        elevation={3}
+        sx={{
+          p: 4,
+          width: '100%',
+          maxWidth: 400,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center'
+        }}
+      >
+        <img 
+          src={Logo} 
+          alt="Upbase Logo" 
+          style={{ height: 80, marginBottom: 24 }}
+        />
+
+        <Typography variant="h5" gutterBottom>
           Login
         </Typography>
 
         {error && (
-          <Alert severity="error" sx={{ mb: 2 }}>
+          <Alert severity="error" sx={{ mb: 2, width: '100%' }}>
             {error}
           </Alert>
         )}
 
-        <form onSubmit={handleSubmit}>
-          <TextField
-            fullWidth
-            required
-            label="E-mail Corporativo"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            sx={{ mb: 2 }}
-          />
+        <Box component="form" onSubmit={handleSubmit} sx={{ width: '100%' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <TextField
+              sx={{ flexGrow: 1 }}
+              label="E-mail" // Corrigido para "E-mail" com hífen
+              value={credentials.emailPrefix}
+              onChange={(e) => setCredentials(prev => ({ 
+                ...prev, 
+                emailPrefix: e.target.value.toLowerCase()
+              }))}
+              placeholder="joao.silva"
+            />
+            <Typography
+              sx={{
+                ml: 1,
+                color: 'text.secondary',
+                whiteSpace: 'nowrap'
+              }}
+            >
+              @grupocesari.com.br
+            </Typography>
+          </Box>
 
           <TextField
             fullWidth
-            required
             label="Senha"
             type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            sx={{ mb: 2 }}
+            margin="normal"
+            value={credentials.password}
+            onChange={(e) => setCredentials(prev => ({ 
+              ...prev, 
+              password: e.target.value 
+            }))}
           />
 
           <Button
             fullWidth
             type="submit"
             variant="contained"
-            disabled={loading}
-            sx={{ mb: 2 }}
+            sx={{ mt: 3 }}
           >
-            {loading ? 'Entrando...' : 'Entrar'}
+            Entrar
           </Button>
+        </Box>
 
-          <Typography align="center">
-            Não tem uma conta?{' '}
-            <Link component={RouterLink} to="/register">
-              Cadastre-se
-            </Link>
-          </Typography>
-        </form>
+        <Box sx={{ mt: 2, width: '100%', textAlign: 'center' }}>
+          <MuiLink
+            component={RouterLink}
+            to="/register"
+            variant="body2"
+            sx={{
+              textDecoration: 'none',
+              '&:hover': {
+                textDecoration: 'underline'
+              }
+            }}
+          >
+            Não tem uma conta? Cadastre-se
+          </MuiLink>
+        </Box>
       </Paper>
     </Box>
   );
