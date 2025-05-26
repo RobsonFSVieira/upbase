@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Outlet } from 'react-router-dom';
 import {
   AppBar,
   Box,
@@ -29,10 +29,15 @@ import {
   HealthAndSafety,
   Warning,
   Feedback,
+  HelpOutline,
 } from '@mui/icons-material';
 import { useTheme as useThemeContext } from '../../contexts/ThemeContext';
+import { useHelp } from '../../contexts/HelpContext';
+import { useLocation } from 'react-router-dom';
 import Logo from '../../assets/images/logo-official.png';
-import UserMenu from '../common/UserMenu';
+import UserMenu from './UserMenu';
+import HelpDialog from '../common/HelpDialog';
+import { helpContent } from '../../utils/helpContent';
 
 const DRAWER_WIDTH = 240;
 
@@ -53,7 +58,7 @@ const menuItems = [
   { text: 'Feedbacks', icon: <Feedback />, path: '/feedbacks' },
 ];
 
-function MainLayout({ children }) {
+function MainLayout() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [logoError, setLogoError] = useState(false); // Adicionando o state para o logo
   const [expandedMenu, setExpandedMenu] = useState('');
@@ -61,6 +66,7 @@ function MainLayout({ children }) {
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const navigate = useNavigate();
   const { isDarkMode, toggleTheme } = useThemeContext();
+  const { showHelp } = useHelp();
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -77,6 +83,18 @@ function MainLayout({ children }) {
 
   const handleLogoClick = () => {
     navigate('/');
+  };
+
+  const location = useLocation();
+
+  const handleHelpClick = () => {
+    const pathHelp = helpContent[location.pathname];
+    if (pathHelp) {
+      showHelp('Ajuda', pathHelp);
+    } else {
+      // Fallback para páginas sem conteúdo específico
+      showHelp('Ajuda', helpContent['/']);
+    }
   };
 
   const drawer = (
@@ -285,8 +303,32 @@ function MainLayout({ children }) {
           mt: { xs: '64px', sm: '70px' },
         }}
       >
-        {children}
+        <Outlet /> {/* Substituir {children} por <Outlet /> */}
       </Box>
+
+      <IconButton
+        onClick={handleHelpClick}
+        sx={{
+          position: 'fixed',
+          bottom: 24,
+          right: 24,
+          zIndex: 1200,
+          backgroundColor: theme.palette.background.paper,
+          color: theme.palette.mode === 'light' ? '#0F2747' : '#FFFFFF',
+          boxShadow: theme.shadows[3],
+          '&:hover': {
+            backgroundColor: theme.palette.mode === 'light'
+              ? 'rgba(15, 39, 71, 0.08)'
+              : 'rgba(255, 255, 255, 0.08)',
+            transform: 'scale(1.1)'
+          },
+          transition: 'all 0.2s'
+        }}
+      >
+        <HelpOutline />
+      </IconButton>
+
+      <HelpDialog />
     </Box>
   );
 }

@@ -14,20 +14,25 @@ import {
   Select,
   MenuItem
 } from '@mui/material';
+import { useTheme } from '../../contexts/ThemeContext';
 
 const Settings = () => {
+  const { isDarkMode, toggleTheme } = useTheme();
   const [settings, setSettings] = React.useState({
-    darkMode: false,
     notifications: true,
     emailNotifications: true,
     language: 'pt-BR'
   });
 
   const handleChange = (setting) => (event) => {
-    setSettings(prev => ({
-      ...prev,
-      [setting]: event.target.type === 'checkbox' ? event.target.checked : event.target.value
-    }));
+    if (setting === 'darkMode') {
+      toggleTheme();
+    } else {
+      setSettings(prev => ({
+        ...prev,
+        [setting]: event.target.type === 'checkbox' ? event.target.checked : event.target.value
+      }));
+    }
   };
 
   return (
@@ -46,8 +51,8 @@ const Settings = () => {
             <ListItemSecondaryAction>
               <Switch
                 edge="end"
-                checked={settings.darkMode}
-                onChange={handleChange('darkMode')}
+                checked={isDarkMode}
+                onChange={() => toggleTheme()}
               />
             </ListItemSecondaryAction>
           </ListItem>

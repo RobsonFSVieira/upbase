@@ -20,6 +20,8 @@ import {
   Tab,
   Tooltip,
   Avatar,
+  CircularProgress,
+  Alert
 } from '@mui/material';
 import {
   Search as SearchIcon,
@@ -29,155 +31,124 @@ import {
   Edit as EditIcon,
   Visibility as ViewIcon,
 } from '@mui/icons-material';
-
-// Dados mockados
-const mockData = {
-  stats: {
-    total: 48,
-    ativos: 45,
-    afastados: 3,
-    turnos: {
-      A: 12,
-      B: 12,
-      C: 12,
-      D: 9,
-      ADM: 3
-    }
-  },
-  colaboradores: [
-    {
-      id: 1,
-      nome: 'João Silva',
-      matricula: '12345',
-      email: 'joao.silva@grupocesari.com.br',
-      turno: 'A',
-      cargo: 'Operador I',
-      lider: 'Carlos Souza',
-      tempoEmpresa: '2 anos',
-      status: 'ativo',
-      avaliacoesPendentes: 1
-    },
-    {
-      id: 2,
-      nome: 'Maria Santos',
-      matricula: '12346',
-      email: 'maria.santos@grupocesari.com.br',
-      turno: 'B',
-      cargo: 'Operador II',
-      lider: 'Carlos Souza',
-      tempoEmpresa: '3 anos',
-      status: 'ativo',
-      avaliacoesPendentes: 0
-    },
-    {
-      id: 3,
-      nome: 'Pedro Oliveira',
-      matricula: '12347',
-      email: 'pedro.oliveira@grupocesari.com.br',
-      turno: 'C',
-      cargo: 'Técnico',
-      lider: 'Ana Paula',
-      tempoEmpresa: '1 ano',
-      status: 'afastado',
-      avaliacoesPendentes: 0
-    },
-    // Adicione mais colaboradores conforme necessário
-  ]
-};
+import PageHeader from '../../components/common/PageHeader';
+import { useAvaliacao } from '../../contexts/AvaliacaoContext';
 
 const Colaboradores = () => {
   const [tabValue, setTabValue] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
+  const { dashboardStats, loading, error } = useAvaliacao();
+
+  const colaboradores = [
+    {
+      id: 1,
+      nome: 'João Silva',
+      cargo: 'Desenvolvedor',
+      departamento: 'Desenvolvimento',
+      turno: 'A',
+      avaliacao: 4.5,
+      status: 'ativo'
+    },
+    {
+      id: 2,
+      nome: 'Maria Oliveira',
+      cargo: 'Analista de Marketing',
+      departamento: 'Marketing',
+      turno: 'B',
+      avaliacao: 4.2,
+      status: 'ativo'
+    },
+    {
+      id: 3,
+      nome: 'Carlos Santos',
+      cargo: 'Analista de RH',
+      departamento: 'Recursos Humanos',
+      turno: 'A',
+      avaliacao: 4.0,
+      status: 'ativo'
+    }
+  ];
+
+  const getInitials = (name) => {
+    return name
+      .split(' ')
+      .map(n => n[0])
+      .join('')
+      .toUpperCase();
+  };
+
+  const filteredColaboradores = colaboradores.filter(col =>
+    col.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    col.departamento.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    col.cargo.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const renderVisaoGeral = () => (
     <Grid container spacing={3}>
       <Grid item xs={12} md={6} lg={3}>
         <Card>
           <CardContent>
-            <Typography color="textSecondary" gutterBottom>
-              Total de Colaboradores
-            </Typography>
-            <Typography variant="h4">{mockData.stats.total}</Typography>
-            <Typography variant="body2" sx={{ mt: 1 }}>
-              Ativos: {mockData.stats.ativos} | Afastados: {mockData.stats.afastados}
-            </Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+              <Group color="primary" sx={{ mr: 1 }} />
+              <Typography variant="h6">Total Colaboradores</Typography>
+            </Box>
+            <Typography variant="h4">{dashboardStats?.totalColaboradores || '0'}</Typography>
           </CardContent>
         </Card>
       </Grid>
+
       <Grid item xs={12} md={6} lg={3}>
         <Card>
           <CardContent>
-            <Typography color="textSecondary" gutterBottom>
-              Distribuição por Turno
-            </Typography>
-            {Object.entries(mockData.stats.turnos).map(([turno, quantidade]) => (
-              <Typography key={turno}>
-                Turno {turno}: {quantidade}
-              </Typography>
-            ))}
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+              <Assessment color="success" sx={{ mr: 1 }} />
+              <Typography variant="h6">Média Avaliações</Typography>
+            </Box>
+            <Typography variant="h4">{dashboardStats?.mediaAvaliacoes || '0'}</Typography>
           </CardContent>
         </Card>
       </Grid>
     </Grid>
   );
 
-  const renderListagem = () => (
+  const renderLista = () => (
     <TableContainer component={Paper}>
       <Table>
         <TableHead>
           <TableRow>
             <TableCell>Colaborador</TableCell>
-            <TableCell>Matrícula</TableCell>
-            <TableCell>Turno</TableCell>
             <TableCell>Cargo</TableCell>
-            <TableCell>Líder</TableCell>
+            <TableCell>Departamento</TableCell>
+            <TableCell>Turno</TableCell>
+            <TableCell>Última Avaliação</TableCell>
             <TableCell>Status</TableCell>
-            <TableCell>Avaliações</TableCell>
-            <TableCell>Ações</TableCell>
+            <TableCell align="right">Ações</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {mockData.colaboradores.map((col) => (
-            <TableRow key={col.id}>
+          {filteredColaboradores.map((colaborador) => (
+            <TableRow key={colaborador.id}>
               <TableCell>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <Avatar sx={{ width: 32, height: 32 }}>
-                    {col.nome[0]}
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <Avatar sx={{ mr: 2, bgcolor: 'primary.main' }}>
+                    {getInitials(colaborador.nome)}
                   </Avatar>
-                  <Box>
-                    <Typography variant="body2">{col.nome}</Typography>
-                    <Typography variant="caption" color="textSecondary">
-                      {col.email}
-                    </Typography>
-                  </Box>
+                  <Typography>{colaborador.nome}</Typography>
                 </Box>
               </TableCell>
-              <TableCell>{col.matricula}</TableCell>
-              <TableCell>
-                <Chip label={`Turno ${col.turno}`} size="small" />
-              </TableCell>
-              <TableCell>{col.cargo}</TableCell>
-              <TableCell>{col.lider}</TableCell>
+              <TableCell>{colaborador.cargo}</TableCell>
+              <TableCell>{colaborador.departamento}</TableCell>
+              <TableCell>{colaborador.turno}</TableCell>
+              <TableCell>{colaborador.avaliacao}</TableCell>
               <TableCell>
                 <Chip
-                  label={col.status === 'ativo' ? 'Ativo' : 'Afastado'}
-                  color={col.status === 'ativo' ? 'success' : 'warning'}
+                  label={colaborador.status === 'ativo' ? 'Ativo' : 'Inativo'}
+                  color={colaborador.status === 'ativo' ? 'success' : 'default'}
                   size="small"
                 />
               </TableCell>
-              <TableCell>
-                {col.avaliacoesPendentes > 0 ? (
-                  <Chip
-                    label={`${col.avaliacoesPendentes} pendente(s)`}
-                    color="warning"
-                    size="small"
-                  />
-                ) : (
-                  <Chip label="Em dia" color="success" size="small" />
-                )}
-              </TableCell>
-              <TableCell>
-                <Tooltip title="Visualizar Perfil">
+              <TableCell align="right">
+                <Tooltip title="Visualizar">
                   <IconButton size="small">
                     <ViewIcon fontSize="small" />
                   </IconButton>
@@ -195,43 +166,56 @@ const Colaboradores = () => {
     </TableContainer>
   );
 
-  return (
-    <Box sx={{ p: 3 }}>
-      <Typography variant="h5" gutterBottom>
-        Colaboradores
-      </Typography>
+  if (loading) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" p={3}>
+        <CircularProgress />
+      </Box>
+    );
+  }
 
+  if (error) {
+    return (
+      <Alert severity="error" sx={{ m: 2 }}>
+        {error}
+      </Alert>
+    );
+  }
+
+  return (
+    <Box>
+      <PageHeader title="Colaboradores" />
+      
       <Box sx={{ mb: 3 }}>
-        <Tabs value={tabValue} onChange={(e, newValue) => setTabValue(newValue)}>
-          <Tab icon={<Assessment />} label="Visão Geral" />
-          <Tab icon={<Group />} label="Listagem" />
+        <Tabs
+          value={tabValue}
+          onChange={(_, newValue) => setTabValue(newValue)}
+        >
+          <Tab label="Visão Geral" />
+          <Tab label="Lista" />
         </Tabs>
       </Box>
 
-      <Box sx={{ mb: 3 }}>
+      <Box sx={{ mb: 3, display: 'flex', gap: 2 }}>
         <TextField
           fullWidth
-          placeholder="Buscar por nome, matrícula ou cargo..."
+          placeholder="Pesquisar colaboradores..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
                 <SearchIcon />
               </InputAdornment>
             ),
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton>
-                  <FilterIcon />
-                </IconButton>
-              </InputAdornment>
-            )
           }}
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
         />
+        <IconButton>
+          <FilterIcon />
+        </IconButton>
       </Box>
 
-      {tabValue === 0 ? renderVisaoGeral() : renderListagem()}
+      {tabValue === 0 ? renderVisaoGeral() : renderLista()}
     </Box>
   );
 };

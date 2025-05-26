@@ -3,10 +3,11 @@ import {
   Box,
   Paper,
   Typography,
-  Alert,
-  Button
+  Button,
+  Alert
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import Logo from '../../assets/images/logo-official.png';
 
 const PendingApproval = () => {
   const navigate = useNavigate();
@@ -22,17 +23,17 @@ const PendingApproval = () => {
         pt: { xs: 4, sm: 8 }
       }}
     >
-      <Paper sx={{ p: 4, maxWidth: 500, width: '100%' }}>
+      <Paper elevation={3} sx={{ p: 4, width: '100%', maxWidth: 400 }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 3 }}>
+          <img src={Logo} alt="Upbase Logo" style={{ height: 80, marginBottom: 24 }} />
+          <Typography variant="h5" gutterBottom>Cadastro Realizado!</Typography>
+        </Box>
+
         <Alert severity="info" sx={{ mb: 3 }}>
-          Cadastro realizado com sucesso!
-        </Alert>
-        
-        <Typography variant="h6" gutterBottom>
-          Aguardando Aprovação
-        </Typography>
-        
-        <Typography paragraph>
           Seu cadastro foi recebido e está aguardando aprovação do administrador.
+        </Alert>
+
+        <Typography variant="body1" paragraph>
           Você receberá um e-mail assim que sua conta for aprovada.
         </Typography>
 

@@ -1,45 +1,54 @@
 import { supabase } from './supabase';
 import { mockData } from './mockData';
 
-// Services that use mock data for development, prepared for future backend integration
+// Versão do serviço focada em dados mockados, mas preparada para integração futura
 export const performanceService = {
+  // Obter avaliações que o usuário precisa completar (autoavaliação)
   getAvaliacoesCompletar(userId) {
-    // Return all pending evaluations that need autoavaliacao
     const avaliacoes = mockData.avaliacoes.pendentes.filter(av => {
       return av.status_avaliacao === "pendente_autoavaliacao";
     });
     return Promise.resolve(avaliacoes);
   },
 
+  // Obter avaliações pendentes da análise do líder
   getAvaliacoesPendentes(liderId) {
-    // Return all pending evaluations that need leader review
     const avaliacoes = mockData.avaliacoes.pendentes.filter(av => {
       return av.status_avaliacao === "pendente_lider";
     });
     return Promise.resolve(avaliacoes);
   },
 
+  // Criar nova avaliação
   criarNovaAvaliacao(dados) {
-    // Create new evaluation
     const novaAvaliacao = {
       id: mockData.avaliacoes.pendentes.length + mockData.avaliacoes.emAndamento.length + 1,
       ...dados,
       status_avaliacao: "pendente_autoavaliacao",
-      nota_final_calculada: null
+      nota_final_calculada: null,
+      data_inicio_avaliacao: new Date().toISOString()
     };
 
-    // Add to pending evaluations
     mockData.avaliacoes.pendentes.push(novaAvaliacao);
     return Promise.resolve(novaAvaliacao);
   },
 
+  // Obter todas as avaliações
   getAll() {
-    // Return all evaluations (pending and in progress)
     const todasAvaliacoes = [
       ...mockData.avaliacoes.pendentes,
       ...mockData.avaliacoes.emAndamento
     ];
 
-    return Promise.resolve(todasAvaliacoes);
+    return Promise.resolve(todasAvaliacoes.map(av => ({
+      id: av.id,
+      status: av.status_avaliacao,
+      nome_colaborador: av.nome_colaborador,
+      departamento: av.departamento,
+      periodo: av.periodo,
+      nota_final: av.nota_final_calculada,
+      comentarios_gerais_autoavaliacao: av.comentarios_gerais_autoavaliacao || '',
+      comentarios_gerais_lider: av.comentarios_gerais_lider || ''
+    })));
   }
 };

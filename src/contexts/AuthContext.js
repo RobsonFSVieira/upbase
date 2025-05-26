@@ -50,23 +50,29 @@ export const AuthProvider = ({ children }) => {
     return newUser;
   };
 
-  const login = async (email, password, isLeader = false) => {
-    // Para teste, aceita qualquer senha
-    const mockUser = mockUsers.find(u => u.email === email) || {
-      id: Date.now().toString(),
-      email,
-      name: email.split('@')[0],
-      role: isLeader ? 'lider' : 'colaborador',
-      turno: 'A'
-    };
+  const login = async (email, password) => {
+    try {
+      // Buscar usuário mockado
+      const mockUser = mockUsers.find(u => u.email === email) || {
+        id: Date.now().toString(),
+        email,
+        name: email.split('@')[0],
+        role: email.includes('lider') ? 'lider' : 'colaborador',
+        turno: 'A',
+        status: 'approved' // Para teste, considere todos aprovados
+      };
 
-    // Verifica se o usuário está aprovado
-    if (mockUser.status !== 'approved') {
-      throw new Error('Conta aguardando aprovação do administrador');
+      // Simular verificação de status
+      if (mockUser.status === 'pending') {
+        throw new Error('Conta aguardando aprovação do administrador');
+      }
+
+      setUser(mockUser);
+      localStorage.setItem('upbase_user', JSON.stringify(mockUser));
+      return mockUser;
+    } catch (error) {
+      throw new Error(error.message || 'Erro ao realizar login');
     }
-    
-    setUser(mockUser);
-    localStorage.setItem('upbase_user', JSON.stringify(mockUser));
   };
 
   const logout = () => {

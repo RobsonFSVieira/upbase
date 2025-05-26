@@ -11,8 +11,10 @@ import {
 import { Link as RouterLink } from 'react-router-dom';
 import { Link as MuiLink } from '@mui/material';
 import Logo from '../../assets/images/logo-official.png';
+import { useAuth } from '../../contexts/AuthContext';
 
 const Login = () => {
+  const { login } = useAuth();
   const navigate = useNavigate();
   const [credentials, setCredentials] = useState({ 
     emailPrefix: '', // Mudamos de email para emailPrefix
@@ -20,23 +22,19 @@ const Login = () => {
   });
   const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (credentials.emailPrefix && credentials.password) {
-      const email = `${credentials.emailPrefix}@grupocesari.com.br`;
-      const isLider = email.endsWith('lider.grupocesari.com.br');
-      const mockUser = {
-        id: 1,
-        email,
-        name: credentials.emailPrefix,
-        role: isLider ? 'lider' : 'colaborador'
-      };
-
-      localStorage.setItem('upbase_user', JSON.stringify(mockUser));
-      navigate('/');
-    } else {
-      setError('Por favor, preencha todos os campos');
+    try {
+      if (credentials.emailPrefix && credentials.password) {
+        const email = `${credentials.emailPrefix}@grupocesari.com.br`;
+        await login(email, credentials.password);
+        navigate('/');
+      } else {
+        setError('Por favor, preencha todos os campos');
+      }
+    } catch (error) {
+      setError(error.message || 'Erro ao fazer login');
     }
   };
 

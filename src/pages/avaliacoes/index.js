@@ -1,50 +1,45 @@
 import React from 'react';
-import { Box, Typography, Grid, Card, CardContent, CardActionArea } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
-import { Assessment, Timeline } from '@mui/icons-material';
+import { Box, Grid, Card, CardContent, Typography, Button } from '@mui/material';
+import { Outlet, useNavigate, useLocation } from 'react-router-dom';
+import PageHeader from '../../components/common/PageHeader';
 
-export default function Avaliacoes() {
+const Avaliacoes = () => {
   const navigate = useNavigate();
-  
-  const avaliacoes = [
-    {
-      title: 'Avaliações de Desempenho',
-      description: 'Gerencie avaliações de desempenho dos colaboradores',
-      icon: <Assessment sx={{ fontSize: 40 }} />,
-      path: '/avaliacoes/desempenho'
-    },
-    {
-      title: 'Avaliações de Experiência',
-      description: 'Gerencie avaliações de período de experiência',
-      icon: <Timeline sx={{ fontSize: 40 }} />,
-      path: '/avaliacoes/experiencia'
-    }
-  ];
+  const location = useLocation();
 
   return (
     <Box>
-      <Typography variant="h5" gutterBottom fontWeight="bold">
-        Avaliações
-      </Typography>
-      <Grid container spacing={3}>
-        {avaliacoes.map((item) => (
-          <Grid item xs={12} sm={6} key={item.path}>
+      <PageHeader 
+        title="Avaliações"
+        helpText="Central de Avaliações"
+      />
+      {location.pathname === '/avaliacoes' ? (
+        <Grid container spacing={3}>
+          <Grid item xs={12} md={6}>
             <Card>
-              <CardActionArea onClick={() => navigate(item.path)}>
-                <CardContent sx={{ p: 4, textAlign: 'center' }}>
-                  {item.icon}
-                  <Typography variant="h6" sx={{ mt: 2, mb: 1 }}>
-                    {item.title}
-                  </Typography>
-                  <Typography color="text.secondary">
-                    {item.description}
-                  </Typography>
-                </CardContent>
-              </CardActionArea>
+              <CardContent>
+                <Typography variant="h6" gutterBottom>
+                  Avaliações de Desempenho
+                </Typography>
+                <Typography variant="body2" color="text.secondary" paragraph>
+                  Gerencie avaliações de desempenho dos colaboradores
+                </Typography>
+                <Button 
+                  variant="contained"
+                  onClick={() => navigate('/avaliacoes/desempenho')}
+                >
+                  Acessar
+                </Button>
+              </CardContent>
             </Card>
           </Grid>
-        ))}
-      </Grid>
+        </Grid>
+      ) : null}
+      <Box sx={{ mt: 3 }}>
+        <Outlet />
+      </Box>
     </Box>
   );
-}
+};
+
+export default Avaliacoes;

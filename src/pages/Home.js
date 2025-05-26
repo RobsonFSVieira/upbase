@@ -6,30 +6,35 @@ import {
   Feedback,
   TrendingUp,
 } from '@mui/icons-material';
+import { useAvaliacao } from '../contexts/AvaliacaoContext';
 
 function Home() {
+  const { dashboardStats } = useAvaliacao();
+  
+  console.log('Home component rendered with dashboardStats:', dashboardStats);
+
   const cards = [
     {
       title: 'Avaliações Pendentes',
-      value: '5',
+      value: dashboardStats?.avaliacoesPendentes || '0',
       icon: <Assessment />,
       color: '#FF934C',
     },
     {
       title: 'Colaboradores',
-      value: '25',
+      value: dashboardStats?.totalColaboradores || '0',
       icon: <Group />,
       color: '#0F2747',
     },
     {
       title: 'Feedbacks do Mês',
-      value: '12',
+      value: dashboardStats?.feedbacksMes || '0',
       icon: <Feedback />,
       color: '#2D5A9D',
     },
     {
       title: 'Taxa de Crescimento',
-      value: '15%',
+      value: dashboardStats?.taxaCrescimento || '0%',
       icon: <TrendingUp />,
       color: '#34D399',
     },

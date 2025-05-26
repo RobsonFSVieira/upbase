@@ -1,48 +1,33 @@
 import React, { createContext, useContext, useState } from 'react';
-import { Dialog, DialogTitle, DialogContent, Typography, IconButton, Box } from '@mui/material';
-import { Close as CloseIcon, Help as HelpIcon } from '@mui/icons-material';
 
 const HelpContext = createContext();
 
-export const HelpProvider = ({ children }) => {
+export function HelpProvider({ children }) {
   const [helpOpen, setHelpOpen] = useState(false);
-  const [helpContent, setHelpContent] = useState({ title: '', content: '' });
+  const [helpTitle, setHelpTitle] = useState('');
+  const [helpContent, setHelpContent] = useState('');
 
   const showHelp = (title, content) => {
-    setHelpContent({ title, content });
+    setHelpTitle(title);
+    setHelpContent(content);
     setHelpOpen(true);
   };
 
+  const hideHelp = () => {
+    setHelpOpen(false);
+  };
+
   return (
-    <HelpContext.Provider value={{ showHelp }}>
+    <HelpContext.Provider value={{ showHelp, hideHelp, helpOpen, helpTitle, helpContent }}>
       {children}
-      <Dialog 
-        open={helpOpen} 
-        onClose={() => setHelpOpen(false)}
-        maxWidth="sm"
-        fullWidth
-      >
-        <DialogTitle>
-          <Box display="flex" justifyContent="space-between" alignItems="center">
-            <Box display="flex" alignItems="center" gap={1}>
-              <HelpIcon color="primary" />
-              <Typography variant="h6">{helpContent.title}</Typography>
-            </Box>
-            <IconButton onClick={() => setHelpOpen(false)} size="small">
-              <CloseIcon />
-            </IconButton>
-          </Box>
-        </DialogTitle>
-        <DialogContent dividers>
-          {typeof helpContent.content === 'string' ? (
-            <Typography>{helpContent.content}</Typography>
-          ) : (
-            helpContent.content
-          )}
-        </DialogContent>
-      </Dialog>
     </HelpContext.Provider>
   );
-};
+}
 
-export const useHelp = () => useContext(HelpContext);
+export const useHelp = () => {
+  const context = useContext(HelpContext);
+  if (!context) {
+    throw new Error('useHelp must be used within a HelpProvider');
+  }
+  return context;
+};

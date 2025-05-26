@@ -46,14 +46,10 @@ const UserMenu = () => {
     navigate('/settings');
     handleClose();
   };
-
-  const handleLogout = async () => {
-    try {
-      await logout();
-      navigate('/login');
-    } catch (error) {
-      console.error('Erro ao fazer logout:', error);
-    }
+  const handleLogout = () => {
+    handleClose(); // Fecha o menu primeiro
+    logout(); // Limpa o estado do usuário e localStorage
+    navigate('/login', { replace: true }); // Redireciona para login e substitui a entrada no histórico
   };
 
   return (

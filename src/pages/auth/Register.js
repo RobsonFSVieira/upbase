@@ -32,11 +32,19 @@ const Register = () => {
     e.preventDefault();
     
     try {
-      await register(formData);
-      // Redireciona para página de confirmação
-      navigate('/register/pending');
+      // Validar senha
+      if (formData.password !== formData.confirmPassword) {
+        setError('As senhas não coincidem');
+        return;
+      }
+
+      const response = await register(formData);
+      if (response.success) {
+        // Redirecionar para página de aprovação pendente
+        navigate('/register/pending');
+      }
     } catch (error) {
-      setError(error.message);
+      setError(error.message || 'Erro ao realizar cadastro');
     }
   };
 
