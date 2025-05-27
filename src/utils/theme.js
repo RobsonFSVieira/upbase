@@ -192,6 +192,15 @@ const getTheme = (mode) => {
                         backgroundImage: isLight
                             ? `linear-gradient(to bottom, ${tokens.prussianBlue[800]}, ${tokens.prussianBlue[900]})`
                             : `linear-gradient(to bottom, ${tokens.neutral[800]}, ${tokens.neutral[900]})`,
+                        '& .MuiListItemIcon-root': {
+                            color: '#FFFFFF',
+                        },
+                        '& .MuiListItemText-root': {
+                            color: '#FFFFFF',
+                        },
+                        '& .MuiSvgIcon-root': {
+                            color: '#FFFFFF',
+                        }
                     },
                 },
             },

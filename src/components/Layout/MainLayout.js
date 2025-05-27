@@ -110,8 +110,11 @@ function MainLayout() {
               sx={{
                 bgcolor:
                   expandedMenu === item.text
-                    ? 'rgba(255, 255, 255, 0.08)'
+                    ? 'rgba(255, 255, 255, 0.12)'
                     : 'transparent',
+                '&:hover': {
+                  bgcolor: 'rgba(255, 255, 255, 0.08)'
+                }
               }}
             >
               <ListItemIcon>{item.icon}</ListItemIcon>
