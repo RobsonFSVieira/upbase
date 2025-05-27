@@ -16,10 +16,11 @@ import Profile from '../pages/Profile';
 import Settings from '../pages/Settings';
 import Colaboradores from '../pages/colaboradores';
 import Atestados from '../pages/atestados';
+import { AvaliacaoProvider } from '../contexts/AvaliacaoContext';
 
 const AppRoutes = () => {
   const { user, loading } = useAuth();
-  
+
   // Se estiver carregando, não renderiza nada para evitar flash de conteúdo
   if (loading) {
     return null;
@@ -44,16 +45,27 @@ const AppRoutes = () => {
         }
       >
         <Route path="/" element={<Dashboard />} />
-        <Route path="/avaliacoes" element={<Avaliacoes />}>
-          <Route path="desempenho" element={<AvaliacoesDesempenho />}>
-            <Route index element={<StatusAvaliacoes />} />
-            <Route path="progresso" element={<AvaliacoesProgresso />} />
-            <Route path="gerenciar" element={<GerenciamentoAvaliacoes />} />
-            <Route path="modelos" element={<ModelosFormularios />} />
-            <Route path="criar-formulario" element={<ExemploFormulario />} />
+
+        {/* Wrap all avaliação-related routes with AvaliacaoProvider */}
+        <Route
+          element={
+            <AvaliacaoProvider>
+              <Outlet />
+            </AvaliacaoProvider>
+          }
+        >
+          <Route path="/avaliacoes" element={<Avaliacoes />}>
+            <Route path="desempenho" element={<AvaliacoesDesempenho />}>
+              <Route index element={<StatusAvaliacoes />} />
+              <Route path="progresso" element={<AvaliacoesProgresso />} />
+              <Route path="gerenciar" element={<GerenciamentoAvaliacoes />} />
+              <Route path="modelos" element={<ModelosFormularios />} />
+              <Route path="criar-formulario" element={<ExemploFormulario />} />
+            </Route>
           </Route>
+          <Route path="/colaboradores" element={<Colaboradores />} />
         </Route>
-        <Route path="/colaboradores" element={<Colaboradores />} />
+
         <Route path="/profile" element={<Profile />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/atestados" element={<Atestados />} />

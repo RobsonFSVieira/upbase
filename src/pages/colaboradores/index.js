@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
@@ -39,14 +39,15 @@ const Colaboradores = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const { dashboardStats, loading, error } = useAvaliacao();
 
+  // Lista mockada de colaboradores (você pode mover isso para mockData.js depois)
   const colaboradores = [
     {
       id: 1,
       nome: 'João Silva',
       cargo: 'Desenvolvedor',
-      departamento: 'Desenvolvimento',
+      departamento: 'TI',
       turno: 'A',
-      avaliacao: 4.5,
+      ultimaAvaliacao: '2024-05-01',
       status: 'ativo'
     },
     {
@@ -55,7 +56,7 @@ const Colaboradores = () => {
       cargo: 'Analista de Marketing',
       departamento: 'Marketing',
       turno: 'B',
-      avaliacao: 4.2,
+      ultimaAvaliacao: '2024-04-15',
       status: 'ativo'
     },
     {
@@ -64,8 +65,8 @@ const Colaboradores = () => {
       cargo: 'Analista de RH',
       departamento: 'Recursos Humanos',
       turno: 'A',
-      avaliacao: 4.0,
-      status: 'ativo'
+      ultimaAvaliacao: '2024-03-10',
+      status: 'inativo'
     }
   ];
 
@@ -79,8 +80,8 @@ const Colaboradores = () => {
 
   const filteredColaboradores = colaboradores.filter(col =>
     col.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    col.departamento.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    col.cargo.toLowerCase().includes(searchTerm.toLowerCase())
+    col.cargo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    col.departamento.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const renderVisaoGeral = () => (
@@ -104,7 +105,7 @@ const Colaboradores = () => {
               <Assessment color="success" sx={{ mr: 1 }} />
               <Typography variant="h6">Média Avaliações</Typography>
             </Box>
-            <Typography variant="h4">{dashboardStats?.mediaAvaliacoes || '0'}</Typography>
+            <Typography variant="h4">{dashboardStats?.mediaAvaliacoes?.toFixed(1) || '0.0'}</Typography>
           </CardContent>
         </Card>
       </Grid>
@@ -138,8 +139,10 @@ const Colaboradores = () => {
               </TableCell>
               <TableCell>{colaborador.cargo}</TableCell>
               <TableCell>{colaborador.departamento}</TableCell>
-              <TableCell>{colaborador.turno}</TableCell>
-              <TableCell>{colaborador.avaliacao}</TableCell>
+              <TableCell>
+                <Chip label={`Turno ${colaborador.turno}`} size="small" />
+              </TableCell>
+              <TableCell>{new Date(colaborador.ultimaAvaliacao).toLocaleDateString()}</TableCell>
               <TableCell>
                 <Chip
                   label={colaborador.status === 'ativo' ? 'Ativo' : 'Inativo'}
@@ -150,12 +153,12 @@ const Colaboradores = () => {
               <TableCell align="right">
                 <Tooltip title="Visualizar">
                   <IconButton size="small">
-                    <ViewIcon fontSize="small" />
+                    <ViewIcon />
                   </IconButton>
                 </Tooltip>
                 <Tooltip title="Editar">
                   <IconButton size="small">
-                    <EditIcon fontSize="small" />
+                    <EditIcon />
                   </IconButton>
                 </Tooltip>
               </TableCell>
@@ -185,7 +188,7 @@ const Colaboradores = () => {
   return (
     <Box>
       <PageHeader title="Colaboradores" />
-      
+
       <Box sx={{ mb: 3 }}>
         <Tabs
           value={tabValue}
