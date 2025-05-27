@@ -28,10 +28,9 @@ export function ThemeProvider({ children }) {
 
   useEffect(() => {
     localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
-    document.documentElement.setAttribute('data-theme', isDarkMode ? 'dark' : 'light');
   }, [isDarkMode]);
 
-  const theme = React.useMemo(
+  const currentTheme = React.useMemo(
     () => getTheme(isDarkMode ? 'dark' : 'light'),
     [isDarkMode]
   );
@@ -39,8 +38,8 @@ export function ThemeProvider({ children }) {
   const toggleTheme = () => setIsDarkMode(prev => !prev);
 
   return (
-    <ThemeContext.Provider value={{ isDarkMode, toggleTheme }}>
-      <MuiThemeProvider theme={theme}>
+    <ThemeContext.Provider value={{ isDarkMode, toggleTheme, theme: currentTheme }}>
+      <MuiThemeProvider theme={currentTheme}>
         <CssBaseline />
         {children}
       </MuiThemeProvider>

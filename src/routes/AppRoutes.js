@@ -11,6 +11,7 @@ import AvaliacoesProgresso from '../pages/avaliacoes/desempenho/AvaliacoesProgre
 import GerenciamentoAvaliacoes from '../pages/avaliacoes/desempenho/GerenciamentoAvaliacoes';
 import ModelosFormularios from '../pages/avaliacoes/desempenho/ModelosFormularios';
 import StatusAvaliacoes from '../pages/avaliacoes/desempenho/components/StatusAvaliacoes';
+import ExemploFormulario from '../components/PerformanceEvaluation/ExemploFormulario';
 import Profile from '../pages/Profile';
 import Settings from '../pages/Settings';
 import Colaboradores from '../pages/colaboradores';
@@ -49,6 +50,7 @@ const AppRoutes = () => {
             <Route path="progresso" element={<AvaliacoesProgresso />} />
             <Route path="gerenciar" element={<GerenciamentoAvaliacoes />} />
             <Route path="modelos" element={<ModelosFormularios />} />
+            <Route path="criar-formulario" element={<ExemploFormulario />} />
           </Route>
         </Route>
         <Route path="/colaboradores" element={<Colaboradores />} />
