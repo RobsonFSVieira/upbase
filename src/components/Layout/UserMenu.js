@@ -8,7 +8,9 @@ import {
   ListItemText,
   Divider,
   Typography,
-  Box
+  Box,
+  useMediaQuery,
+  useTheme as useMuiTheme
 } from '@mui/material';
 import {
   AccountCircle,
@@ -28,6 +30,8 @@ const UserMenu = () => {
   const { user, logout } = useAuth();
   const { toggleTheme, isDarkMode } = useTheme();
   const navigate = useNavigate();
+  const theme = useMuiTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -84,14 +88,14 @@ const UserMenu = () => {
             {user?.role === 'lider' ? 'Líder' : 'Colaborador'}
           </Typography>
         </Box>
-        
+
         <Divider />
-        
+
         <MenuItem onClick={handleProfile}>
           <ListItemIcon>
             <AccountCircle />
           </ListItemIcon>
-          <ListItemText 
+          <ListItemText
             primary="Meu Perfil"
             secondary="Informações pessoais e preferências"
           />
@@ -101,7 +105,7 @@ const UserMenu = () => {
           <ListItemIcon>
             <Settings />
           </ListItemIcon>
-          <ListItemText 
+          <ListItemText
             primary="Configurações"
             secondary="Ajustes do sistema"
           />
@@ -111,7 +115,7 @@ const UserMenu = () => {
           <ListItemIcon>
             {isDarkMode ? <LightMode /> : <DarkMode />}
           </ListItemIcon>
-          <ListItemText 
+          <ListItemText
             primary={isDarkMode ? 'Modo Claro' : 'Modo Escuro'}
             secondary="Alternar tema do sistema"
           />
@@ -123,7 +127,7 @@ const UserMenu = () => {
           <ListItemIcon>
             <ExitToApp />
           </ListItemIcon>
-          <ListItemText 
+          <ListItemText
             primary="Sair"
             secondary="Encerrar sessão"
           />

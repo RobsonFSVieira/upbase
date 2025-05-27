@@ -1,8 +1,8 @@
 import React from 'react';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
-import { 
-  Box, 
-  Tabs, 
+import {
+  Box,
+  Tabs,
   Tab,
   Paper
 } from '@mui/material';
@@ -34,14 +34,14 @@ const AvaliacoesDesempenho = () => {
 
   return (
     <Box sx={{ width: '100%' }}>
-      <PageHeader 
-        title="Avaliações de Desempenho"
-        helpText="Gerencie as avaliações de desempenho"
+      <PageHeader
+        title="Desempenho"
+        helpText="Central de Avaliações de Desempenho"
       />
-      
+
       <Paper sx={{ mb: 3 }}>
-        <Tabs 
-          value={getCurrentTabIndex()} 
+        <Tabs
+          value={getCurrentTabIndex()}
           onChange={handleTabChange}
           variant="scrollable"
           scrollButtons="auto"

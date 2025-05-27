@@ -184,6 +184,30 @@ const getTheme = (mode) => {
                     },
                 },
             },
+            MuiBottomNavigation: {
+                styleOverrides: {
+                    root: {
+                        backgroundColor: isLight ? tokens.prussianBlue[800] : tokens.neutral[900],
+                        height: 56,
+                    }
+                }
+            },
+            MuiBottomNavigationAction: {
+                styleOverrides: {
+                    root: {
+                        color: isLight ? 'rgba(255, 255, 255, 0.7)' : 'rgba(255, 255, 255, 0.7)',
+                        '&.Mui-selected': {
+                            color: '#FFFFFF',
+                        },
+                    },
+                    label: {
+                        fontSize: '0.75rem',
+                        '&.Mui-selected': {
+                            fontSize: '0.75rem',
+                        }
+                    }
+                }
+            },
             MuiDrawer: {
                 styleOverrides: {
                     paper: {

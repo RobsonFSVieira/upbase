@@ -9,22 +9,22 @@ const Avaliacoes = () => {
 
   return (
     <Box>
-      <PageHeader 
-        title="Avaliações"
-        helpText="Central de Avaliações"
-      />
+      {location.pathname === '/avaliacoes' && (
+        <PageHeader
+          title="Desempenho"
+          helpText="Central de Avaliações de Desempenho"
+        />
+      )}
       {location.pathname === '/avaliacoes' ? (
         <Grid container spacing={3}>
           <Grid item xs={12} md={6}>
             <Card>
               <CardContent>
-                <Typography variant="h6" gutterBottom>
-                  Avaliações de Desempenho
-                </Typography>
                 <Typography variant="body2" color="text.secondary" paragraph>
-                  Gerencie avaliações de desempenho dos colaboradores
+                  Gerencie avaliações de desempenho dos colaboradores. Acompanhe o progresso,
+                  configure ciclos de avaliação e visualize resultados.
                 </Typography>
-                <Button 
+                <Button
                   variant="contained"
                   onClick={() => navigate('/avaliacoes/desempenho')}
                 >

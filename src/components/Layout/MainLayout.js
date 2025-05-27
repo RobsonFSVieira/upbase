@@ -13,6 +13,7 @@ import {
   Toolbar,
   useMediaQuery,
   useTheme,
+  Typography,
 } from '@mui/material';
 import {
   Menu as MenuIcon,
@@ -38,6 +39,7 @@ import Logo from '../../assets/images/logo-official.png';
 import UserMenu from './UserMenu';
 import HelpDialog from '../common/HelpDialog';
 import { helpContent } from '../../utils/helpContent';
+import BottomNav from '../Navigation/BottomNav';
 
 const DRAWER_WIDTH = 240;
 
@@ -67,6 +69,7 @@ function MainLayout() {
   const navigate = useNavigate();
   const { isDarkMode, toggleTheme } = useThemeContext();
   const { showHelp } = useHelp();
+  const location = useLocation();
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -85,8 +88,6 @@ function MainLayout() {
     navigate('/');
   };
 
-  const location = useLocation();
-
   const handleHelpClick = () => {
     const pathHelp = helpContent[location.pathname];
     if (pathHelp) {
@@ -95,6 +96,15 @@ function MainLayout() {
       // Fallback para páginas sem conteúdo específico
       showHelp('Ajuda', helpContent['/']);
     }
+  };
+
+  const getPageTitle = () => {
+    const path = location.pathname;
+    if (path === '/') return 'Dashboard';
+    if (path.includes('/avaliacoes')) return 'Avaliações';
+    if (path.includes('/profile')) return 'Meu Perfil';
+    // Adicione mais casos conforme necessário
+    return 'UPBase';
   };
 
   const drawer = (
@@ -162,19 +172,12 @@ function MainLayout() {
         sx={{
           zIndex: theme.zIndex.drawer + 1,
           backdropFilter: 'blur(12px)',
-          backgroundColor:
-            theme.palette.mode === 'light'
-              ? 'rgba(255, 255, 255, 0.85)'
-              : 'rgba(15, 39, 71, 0.85)',
-          borderBottom:
-            theme.palette.mode === 'light'
-              ? '1px solid rgba(231, 235, 240, 0.8)'
-              : '1px solid rgba(255, 255, 255, 0.05)',
-          '@media (max-width: 600px)': {
-            position: 'fixed',
-            width: '100%',
-            top: 0,
-          },
+          backgroundColor: theme.palette.mode === 'light'
+            ? 'rgba(255, 255, 255, 0.95)'
+            : 'rgba(15, 39, 71, 0.95)',
+          borderBottom: theme.palette.mode === 'light'
+            ? '1px solid rgba(231, 235, 240, 0.8)'
+            : '1px solid rgba(255, 255, 255, 0.05)',
         }}
       >
         <Toolbar
@@ -183,28 +186,17 @@ function MainLayout() {
             justifyContent: 'space-between',
             alignItems: 'center',
             gap: 2,
-            minHeight: { xs: '64px', sm: '70px' },
+            minHeight: { xs: '56px', sm: '70px' },
             px: { xs: 2, sm: 3 },
           }}
         >
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <IconButton
-              color="inherit"
-              edge="start"
-              onClick={handleDrawerToggle}
-              sx={{
-                display: { sm: 'none' },
-                color: theme.palette.mode === 'light' ? '#0F2747' : '#FFFFFF',
-                '&:hover': {
-                  backgroundColor:
-                    theme.palette.mode === 'light'
-                      ? 'rgba(15, 39, 71, 0.08)'
-                      : 'rgba(255, 255, 255, 0.08)',
-                },
-              }}
-            >
-              <MenuIcon sx={{ fontSize: 24 }} />
-            </IconButton>
+          {/* Logo e título para mobile */}
+          <Box sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 2,
+            flex: 1
+          }}>
             {!logoError && (
               <Box
                 component="img"
@@ -212,7 +204,8 @@ function MainLayout() {
                 alt="UPBase Logo"
                 onClick={handleLogoClick}
                 sx={{
-                  height: { xs: '55px', sm: '75px' },
+                  height: { xs: '32px', sm: '75px' },
+                  display: { xs: 'none', sm: 'block' },
                   transition: 'transform 0.2s',
                   cursor: 'pointer',
                   '&:hover': {
@@ -225,8 +218,21 @@ function MainLayout() {
                 }}
               />
             )}
+
+            {/* Título da página atual no mobile */}
+            <Typography
+              variant="h6"
+              sx={{
+                display: { xs: 'block', sm: 'none' },
+                fontSize: '1.125rem',
+                fontWeight: 600
+              }}
+            >
+              {getPageTitle()}
+            </Typography>
           </Box>
 
+          {/* Ações da AppBar */}
           <Box
             sx={{
               display: 'flex',
@@ -234,39 +240,22 @@ function MainLayout() {
               gap: { xs: 1, sm: 2 },
             }}
           >
-            <IconButton
-              sx={{
-                color: theme.palette.mode === 'light' ? '#0F2747' : '#FFFFFF',
-                '&:hover': {
-                  backgroundColor:
-                    theme.palette.mode === 'light'
-                      ? 'rgba(15, 39, 71, 0.08)'
-                      : 'rgba(255, 255, 255, 0.08)',
-                },
-              }}
-            >
-              <NotificationsOutlined sx={{ fontSize: 22 }} />
-            </IconButton>
             <UserMenu />
+
+            {/* Botão de tema apenas em telas maiores */}
             <IconButton
               onClick={toggleTheme}
               sx={{
+                display: { xs: 'none', sm: 'flex' },
                 color: theme.palette.mode === 'light' ? '#0F2747' : '#FFFFFF',
                 '&:hover': {
-                  backgroundColor:
-                    theme.palette.mode === 'light'
-                      ? 'rgba(15, 39, 71, 0.08)'
-                      : 'rgba(255, 255, 255, 0.08)',
-                  transform: 'scale(1.1)',
+                  backgroundColor: theme.palette.mode === 'light'
+                    ? 'rgba(15, 39, 71, 0.08)'
+                    : 'rgba(255, 255, 255, 0.08)',
                 },
-                transition: 'all 0.2s',
               }}
             >
-              {isDarkMode ? (
-                <LightMode sx={{ fontSize: 22 }} />
-              ) : (
-                <DarkMode sx={{ fontSize: 22 }} />
-              )}
+              {isDarkMode ? <LightMode /> : <DarkMode />}
             </IconButton>
           </Box>
         </Toolbar>
@@ -277,13 +266,12 @@ function MainLayout() {
         sx={{
           width: { sm: DRAWER_WIDTH },
           flexShrink: { sm: 0 },
+          display: { xs: 'none', sm: 'block' }, // Oculta em mobile
         }}
       >
         <Drawer
-          variant={isMobile ? 'temporary' : 'permanent'}
-          open={mobileOpen}
-          onClose={handleDrawerToggle}
-          ModalProps={{ keepMounted: true }}
+          variant="permanent"
+          open
           sx={{
             '& .MuiDrawer-paper': {
               boxSizing: 'border-box',
@@ -304,6 +292,7 @@ function MainLayout() {
           p: { xs: 2, sm: 3 },
           width: { sm: `calc(100% - ${DRAWER_WIDTH}px)` },
           mt: { xs: '64px', sm: '70px' },
+          mb: { xs: '56px', sm: 0 }, // Adiciona margem inferior para o BottomNav no mobile
         }}
       >
         <Outlet /> {/* Substituir {children} por <Outlet /> */}
@@ -313,7 +302,7 @@ function MainLayout() {
         onClick={handleHelpClick}
         sx={{
           position: 'fixed',
-          bottom: 24,
+          bottom: { xs: 80, sm: 24 }, // Ajusta posição do botão de ajuda para ficar acima do BottomNav
           right: 24,
           zIndex: 1200,
           backgroundColor: theme.palette.background.paper,
@@ -325,13 +314,15 @@ function MainLayout() {
               : 'rgba(255, 255, 255, 0.08)',
             transform: 'scale(1.1)'
           },
-          transition: 'all 0.2s'
+          transition: 'all 0.2s',
+          display: { xs: 'none', sm: 'flex' } // Oculta o botão de ajuda no mobile
         }}
       >
         <HelpOutline />
       </IconButton>
 
       <HelpDialog />
+      <BottomNav />
     </Box>
   );
 }
