@@ -1,6 +1,7 @@
 import React from 'react';
 import { Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { EvaluationProvider } from '../contexts/EvaluationContext';
 import { MainLayout } from '../components/Layout';
 import Dashboard from '../pages/Dashboard';
 import Login from '../pages/auth/Login';
@@ -10,18 +11,17 @@ import AvaliacoesDesempenho from '../pages/avaliacoes/desempenho';
 import AvaliacoesProgresso from '../pages/avaliacoes/desempenho/AvaliacoesProgresso';
 import GerenciamentoAvaliacoes from '../pages/avaliacoes/desempenho/GerenciamentoAvaliacoes';
 import ModelosFormularios from '../pages/avaliacoes/desempenho/ModelosFormularios';
+import EvaluationDashboard from '../pages/avaliacoes/desempenho/EvaluationDashboard';
 import StatusAvaliacoes from '../pages/avaliacoes/desempenho/components/StatusAvaliacoes';
 import ExemploFormulario from '../components/PerformanceEvaluation/ExemploFormulario';
 import Profile from '../pages/Profile';
 import Settings from '../pages/Settings';
 import Colaboradores from '../pages/colaboradores';
 import Atestados from '../pages/atestados';
-import { AvaliacaoProvider } from '../contexts/AvaliacaoContext';
 
 const AppRoutes = () => {
   const { user, loading } = useAuth();
 
-  // Se estiver carregando, não renderiza nada para evitar flash de conteúdo
   if (loading) {
     return null;
   }
@@ -46,26 +46,25 @@ const AppRoutes = () => {
       >
         <Route path="/" element={<Dashboard />} />
 
-        {/* Wrap all avaliação-related routes with AvaliacaoProvider */}
         <Route
+          path="/avaliacoes"
           element={
-            <AvaliacaoProvider>
-              <Outlet />
-            </AvaliacaoProvider>
+            <EvaluationProvider>
+              <Avaliacoes />
+            </EvaluationProvider>
           }
         >
-          <Route path="/avaliacoes" element={<Avaliacoes />}>
-            <Route path="desempenho" element={<AvaliacoesDesempenho />}>
-              <Route index element={<StatusAvaliacoes />} />
-              <Route path="progresso" element={<AvaliacoesProgresso />} />
-              <Route path="gerenciar" element={<GerenciamentoAvaliacoes />} />
-              <Route path="modelos" element={<ModelosFormularios />} />
-              <Route path="criar-formulario" element={<ExemploFormulario />} />
-            </Route>
+          <Route path="desempenho" element={<AvaliacoesDesempenho />}>
+            <Route index element={<EvaluationDashboard />} />
+            <Route path="status" element={<StatusAvaliacoes />} />
+            <Route path="progresso" element={<AvaliacoesProgresso />} />
+            <Route path="gerenciar" element={<GerenciamentoAvaliacoes />} />
+            <Route path="modelos" element={<ModelosFormularios />} />
+            <Route path="criar-formulario" element={<ExemploFormulario />} />
           </Route>
-          <Route path="/colaboradores" element={<Colaboradores />} />
         </Route>
 
+        <Route path="/colaboradores" element={<Colaboradores />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/atestados" element={<Atestados />} />
