@@ -61,6 +61,31 @@ create table evaluations (
 );
 ```
 
+### evaluation_cycles
+```sql
+create table evaluation_cycles (
+  id uuid default uuid_generate_v4() primary key,
+  code text not null unique,
+  start_date timestamptz not null,
+  end_date timestamptz not null,
+  status text not null default 'draft',
+  settings jsonb default '{}',
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+```
+
+### evaluation_feedback
+```sql
+create table evaluation_feedback (
+  id uuid default uuid_generate_v4() primary key,
+  evaluation_id uuid references evaluations,
+  author_id uuid references profiles,
+  content text not null,
+  created_at timestamptz default now()
+);
+```
+
 ## Políticas de Segurança (RLS)
 
 ### profiles
@@ -116,6 +141,15 @@ create policy "Líderes podem atualizar seus times"
   );
 ```
 
+### evaluation_cycles
+```sql
+create policy "Apenas admins podem gerenciar ciclos"
+  on evaluation_cycles
+  using ( auth.user_id in (
+    select id from profiles where role = 'admin'
+  ));
+```
+
 ## Views
 
 ### active_evaluations
@@ -131,6 +165,24 @@ join form_templates ft on e.template_id = ft.id
 join profiles p1 on e.evaluator_id = p1.id
 join profiles p2 on e.evaluated_id = p2.id
 where e.status != 'archived';
+```
+
+-- Nova view para relatórios
+```sql
+create view evaluation_metrics as
+select 
+  p.id as profile_id,
+  p.name,
+  p.team_id,
+  t.name as team_name,
+  count(e.id) as total_evaluations,
+  avg(e.score) as average_score,
+  max(e.completed_at) as last_evaluation_date
+from profiles p
+left join teams t on p.team_id = t.id
+left join evaluations e on p.id = e.evaluated_id
+where e.status = 'completed'
+group by p.id, p.name, p.team_id, t.name;
 ```
 
 ## Funções
@@ -156,3 +208,13 @@ create trigger on_auth_user_created
   after insert on auth.users
   for each row execute procedure public.handle_new_user();
 ```
+
+-- Adicionar novas colunas à tabela evaluations
+alter table evaluations add column cycle_id uuid references evaluation_cycles;
+alter table evaluations add column feedback_required boolean default false;
+alter table evaluations add column self_assessment boolean default false;
+
+-- Adicionar novas colunas à tabela profiles
+alter table profiles add column last_evaluation_date timestamptz;
+alter table profiles add column next_evaluation_date timestamptz;
+alter table profiles add column settings jsonb default '{}';
