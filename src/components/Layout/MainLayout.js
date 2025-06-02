@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, Outlet } from 'react-router-dom';
+import { useNavigate, Outlet, useLocation } from 'react-router-dom';
 import {
   AppBar,
   Box,
@@ -14,6 +14,7 @@ import {
   useMediaQuery,
   useTheme,
   Typography,
+  Collapse,
 } from '@mui/material';
 import {
   Menu as MenuIcon,
@@ -34,7 +35,6 @@ import {
 } from '@mui/icons-material';
 import { useTheme as useThemeContext } from '../../contexts/ThemeContext';
 import { useHelp } from '../../contexts/HelpContext';
-import { useLocation } from 'react-router-dom';
 import Logo from '../../assets/images/logo-official.png';
 import UserMenu from './UserMenu';
 import HelpDialog from '../common/HelpDialog';
@@ -44,26 +44,35 @@ import BottomNav from '../Navigation/BottomNav';
 const DRAWER_WIDTH = 240;
 
 const menuItems = [
-  { text: 'Dashboard', icon: <Dashboard />, path: '/' },
+  { id: 'dashboard', text: 'Dashboard', icon: <Dashboard />, path: '/' },
   {
+    id: 'avaliacoes',
     text: 'Avaliações',
     icon: <Assessment />,
+    path: '/avaliacoes',
     subItems: [
-      { text: 'Desempenho', path: '/avaliacoes/desempenho' },
-      { text: 'Experiência', path: '/avaliacoes/experiencia' },
+      { id: 'desempenho', text: 'Desempenho', path: '/avaliacoes/desempenho', icon: <Assessment /> },
+      { id: 'experiencia', text: 'Experiência', path: '/avaliacoes/experiencia', icon: <Assessment /> },
     ],
   },
-  { text: 'Colaboradores', icon: <Group />, path: '/colaboradores' },
-  { text: 'Escalas', icon: <Event />, path: '/escalas' },
-  { text: 'Atestados', icon: <HealthAndSafety />, path: '/atestados' },
-  { text: 'Apontamentos', icon: <Warning />, path: '/apontamentos' },
-  { text: 'Feedbacks', icon: <Feedback />, path: '/feedbacks' },
+  { id: 'colaboradores', text: 'Colaboradores', icon: <Group />, path: '/colaboradores' },
+  { id: 'escalas', text: 'Escalas', icon: <Event />, path: '/escalas' },
+  { id: 'atestados', text: 'Atestados', icon: <HealthAndSafety />, path: '/atestados' },
+  { id: 'apontamentos', text: 'Apontamentos', icon: <Warning />, path: '/apontamentos' },
+  { id: 'feedbacks', text: 'Feedbacks', icon: <Feedback />, path: '/feedbacks' },
 ];
 
 function MainLayout() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [logoError, setLogoError] = useState(false); // Adicionando o state para o logo
-  const [expandedMenu, setExpandedMenu] = useState('');
+  const [expandedMenus, setExpandedMenus] = useState(() => {
+    return menuItems.reduce((acc, item) => {
+      if (item.subItems) {
+        acc[item.id] = true;
+      }
+      return acc;
+    }, {});
+  });
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const navigate = useNavigate();
@@ -75,12 +84,39 @@ function MainLayout() {
     setMobileOpen(!mobileOpen);
   };
 
+  const isActive = (path, itemId) => {
+    if (!path) return false;
+    // Caso especial para dashboard
+    if (path === '/') {
+      return location.pathname === '/';
+    }
+    // Para itens com subitens, verifica se algum subitem está ativo
+    const menuItem = menuItems.find(item => item.id === itemId);
+    if (menuItem?.subItems) {
+      return menuItem.subItems.some(subItem => location.pathname.startsWith(subItem.path));
+    }
+    // Para outros itens e subitens
+    return location.pathname === path;
+  };
+
   const handleMenuClick = (item) => {
-    if (item.subItems) {
-      setExpandedMenu(expandedMenu === item.text ? '' : item.text);
-    } else {
+    if (!item.subItems) {
       navigate(item.path);
-      if (isMobile) handleDrawerToggle();
+    }
+    // Sempre alterna o estado do menu para o item clicado
+    setExpandedMenus(prev => ({
+      ...prev,
+      [item.id]: !prev[item.id]
+    }));
+    if (isMobile) {
+      handleDrawerToggle();
+    }
+  };
+
+  const handleSubItemClick = (path) => {
+    navigate(path);
+    if (isMobile) {
+      handleDrawerToggle();
     }
   };
 
@@ -107,55 +143,85 @@ function MainLayout() {
     return 'UPBase';
   };
 
+  // No drawer, altere o renderização dos itens:
   const drawer = (
     <div>
       {/* Toolbar apenas aparece em mobile */}
       {isMobile && <Toolbar />}
       <List>
         {menuItems.map((item) => (
-          <React.Fragment key={item.text}>
+          <React.Fragment key={item.id}>
             <ListItem
               button
               onClick={() => handleMenuClick(item)}
               sx={{
-                bgcolor:
-                  expandedMenu === item.text
-                    ? 'rgba(255, 255, 255, 0.12)'
-                    : 'transparent',
+                bgcolor: isActive(item.path, item.id) ? 'rgba(25, 118, 210, 0.12)' : 'transparent',
+                borderLeft: isActive(item.path, item.id) ? '4px solid #1976d2' : '4px solid transparent',
                 '&:hover': {
-                  bgcolor: 'rgba(255, 255, 255, 0.08)'
+                  bgcolor: 'rgba(25, 118, 210, 0.08)',
                 }
               }}
             >
-              <ListItemIcon>{item.icon}</ListItemIcon>
-              <ListItemText primary={item.text} />
-              {item.subItems && (
-                expandedMenu === item.text ? <ExpandLess /> : <ExpandMore />
-              )}
-            </ListItem>
-            {item.subItems && (
-              <List
-                component="div"
-                disablePadding
+              <ListItemIcon
                 sx={{
-                  display: expandedMenu === item.text ? 'block' : 'none',
-                  transition: 'all 0.3s ease',
+                  color: isActive(item.path, item.id) ? '#1976d2' : 'inherit',
+                  minWidth: '40px'
                 }}
               >
-                {item.subItems.map((subItem) => (
-                  <ListItem
-                    button
-                    key={subItem.path}
-                    sx={{ pl: 4 }}
-                    onClick={() => {
-                      navigate(subItem.path);
-                      if (isMobile) handleDrawerToggle();
-                    }}
-                  >
-                    <ListItemText primary={subItem.text} />
-                  </ListItem>
-                ))}
-              </List>
+                {item.icon}
+              </ListItemIcon>
+              <ListItemText
+                primary={item.text}
+                sx={{
+                  color: isActive(item.path, item.id) ? '#1976d2' : 'inherit',
+                  '& .MuiTypography-root': {
+                    fontWeight: isActive(item.path, item.id) ? 600 : 400
+                  }
+                }}
+              />
+              {item.subItems && (
+                expandedMenus[item.id] ? <ExpandLess /> : <ExpandMore />
+              )}
+            </ListItem>
+
+            {item.subItems && (
+              <Collapse in={expandedMenus[item.id]} timeout="auto">
+                <List component="div" disablePadding>
+                  {item.subItems.map((subItem) => (
+                    <ListItem
+                      button
+                      key={subItem.id}
+                      onClick={() => navigate(subItem.path)}
+                      sx={{
+                        pl: 4,
+                        bgcolor: isActive(subItem.path) ? 'rgba(25, 118, 210, 0.12)' : 'transparent',
+                        borderLeft: isActive(subItem.path) ? '4px solid #1976d2' : '4px solid transparent',
+                        '&:hover': {
+                          bgcolor: 'rgba(25, 118, 210, 0.08)',
+                        }
+                      }}
+                    >
+                      <ListItemIcon
+                        sx={{
+                          color: isActive(subItem.path) ? '#1976d2' : 'inherit',
+                          minWidth: '40px'
+                        }}
+                      >
+                        {subItem.icon}
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={subItem.text}
+                        sx={{
+                          color: isActive(subItem.path) ? '#1976d2' : 'inherit',
+                          '& .MuiTypography-root': {
+                            fontWeight: isActive(subItem.path) ? 600 : 400
+                          }
+                        }}
+                      />
+                    </ListItem>
+                  ))}
+                </List>
+              </Collapse>
             )}
           </React.Fragment>
         ))}

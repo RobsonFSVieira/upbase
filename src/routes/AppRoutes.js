@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { EvaluationProvider } from '../contexts/EvaluationContext';
+import { AvaliacaoProvider } from '../contexts/AvaliacaoContext';
 import { MainLayout } from '../components/Layout';
 import Dashboard from '../pages/Dashboard';
 import Login from '../pages/auth/Login';
@@ -18,6 +19,8 @@ import Profile from '../pages/Profile';
 import Settings from '../pages/Settings';
 import Colaboradores from '../pages/colaboradores';
 import Atestados from '../pages/atestados';
+import AuditLogViewer from '../components/AuditLogs/AuditLogViewer';
+import NotFound from '../pages/NotFound';
 
 const AppRoutes = () => {
   const { user, loading } = useAuth();
@@ -36,9 +39,11 @@ const AppRoutes = () => {
       <Route
         element={
           user ? (
-            <MainLayout>
-              <Outlet />
-            </MainLayout>
+            <AvaliacaoProvider>
+              <MainLayout>
+                <Outlet />
+              </MainLayout>
+            </AvaliacaoProvider>
           ) : (
             <Navigate to="/login" replace />
           )
@@ -68,10 +73,11 @@ const AppRoutes = () => {
         <Route path="/profile" element={<Profile />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/atestados" element={<Atestados />} />
+        <Route path="/audit-logs" element={<AuditLogViewer />} />
       </Route>
 
-      {/* Fallback route */}
-      <Route path="*" element={<Navigate to="/" replace />} />
+      {/* Catch-all route para páginas em desenvolvimento */}
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 };
